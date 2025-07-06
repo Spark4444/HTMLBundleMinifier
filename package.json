@@ -1,20 +1,26 @@
 {
   "name": "html-bundle-minifier",
-  "version": "1.0.0",
+  "description": "A simple HTML bundle minifier with basic features",
+  "readme": "readme.md",
+  "keywords": [
+    "html",
+    "minifier",
+    "bundle",
+    "minification",
+    "terser"
+  ],
+  "version": "1.2.0",
   "main": "src/index.js",
   "scripts": {
     "run": "node src/index.js"
   },
-  "author": "",
+  "author": "Spark4444",
   "license": "MIT",
-  "description": "",
-  "dependencies": {
-    "html-minifier-terser": "^7.2.0",
-    "uglify-js": "^3.19.3"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Spark4444/HTMLBundleMinifier"
   },
-  "devDependencies": {
-    "cssnano": "^7.0.7",
-    "postcss": "^8.5.6",
-    "postcss-cli": "^11.0.1"
+  "dependencies": {
+    "html-minifier-terser": "^7.2.0"
   }
 }
