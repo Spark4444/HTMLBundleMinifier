@@ -1,0 +1,20 @@
+{
+  "name": "html-bundle-minifier",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "run": "node src/index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "html-minifier-terser": "^7.2.0",
+    "uglify-js": "^3.19.3"
+  },
+  "devDependencies": {
+    "cssnano": "^7.0.7",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1"
+  }
+}

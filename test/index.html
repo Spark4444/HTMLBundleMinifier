@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Bundle Minifier Test Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="additional-styles.css">
+</head>
+<body>
+    <header>
+        <h1>HTML Bundle Minifier Test Page</h1>
+        <nav>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#test-results">Test Results</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="features">
+            <h2>Features Being Tested</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>CSS Minification</h3>
+                    <p>External CSS files are merged and minified into inline styles.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>JavaScript Minification</h3>
+                    <p>External JS files are merged and minified into inline scripts.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>HTML Minification</h3>
+                    <p>HTML structure is compressed by removing whitespace and comments.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>File Bundling</h3>
+                    <p>Multiple external files are bundled into a single HTML file.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="demo">
+            <h2>Interactive Demo</h2>
+            <div class="demo-container">
+                <div class="input-section">
+                    <label for="text-input">Enter some text:</label>
+                    <input type="text" id="text-input" placeholder="Type something here...">
+                    <button id="process-btn" class="btn-primary">Process Text</button>
+                </div>
+                
+                <div class="output-section">
+                    <h3>Output:</h3>
+                    <div id="output" class="output-display">
+                        Your processed text will appear here...
+                    </div>
+                </div>
+
+                <div class="color-demo">
+                    <h3>Color Changer Demo:</h3>
+                    <button id="red-btn" class="color-btn red">Red</button>
+                    <button id="green-btn" class="color-btn green">Green</button>
+                    <button id="blue-btn" class="color-btn blue">Blue</button>
+                    <button id="reset-btn" class="color-btn reset">Reset</button>
+                    <div id="color-box" class="color-display">
+                        This box will change colors
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="test-results">
+            <h2>Test Results</h2>
+            <div class="test-info">
+                <div class="test-stat">
+                    <span class="stat-label">Original Size:</span>
+                    <span id="original-size" class="stat-value">Calculating...</span>
+                </div>
+                <div class="test-stat">
+                    <span class="stat-label">Minified Size:</span>
+                    <span id="minified-size" class="stat-value">Run minifier to see</span>
+                </div>
+                <div class="test-stat">
+                    <span class="stat-label">Compression Ratio:</span>
+                    <span id="compression-ratio" class="stat-value">Run minifier to see</span>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h3>How to Test:</h3>
+                <ol>
+                    <li>Save this file as test.html</li>
+                    <li>Run the minifier: <code>npm run</code></li>
+                    <li>When prompted, enter the path to this file</li>
+                    <li>Check the generated .min.html file</li>
+                    <li>Compare file sizes and functionality</li>
+                </ol>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 HTML Bundle Minifier Test. This page tests CSS/JS bundling and minification.</p>
+        <div class="footer-stats">
+            <span>External CSS files: 2</span>
+            <span>External JS files: 2</span>
+            <span>Total elements: <span id="element-count">0</span></span>
+        </div>
+    </footer>
+
+    <!-- External JavaScript files -->
+    <script src="main.js"></script>
+    <script src="utils.js"></script>
+</body>
+</html>
