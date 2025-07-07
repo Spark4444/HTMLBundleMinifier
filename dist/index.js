@@ -94,10 +94,17 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
                 process.exit(0);
             }
         }
+        else {
+            // If no prompts are required, exit after the first run
+            running = false;
+            console.log("Exiting...");
+            readLine_1.readline.close();
+            process.exit(0);
+        }
     }
 }
 // Export the main function so it can be used by the CLI
-module.exports = { main };
+module.exports = main;
 // Only run main if this file is executed directly (not when imported)
 if (require.main === module) {
     main();
