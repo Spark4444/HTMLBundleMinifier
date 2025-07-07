@@ -1,7 +1,7 @@
 {
   "name": "html-bundle-minifier",
   "description": "A simple HTML bundle minifier with basic features",
-  "readme": "readme.md",
+  "readme": "README.md",
   "keywords": [
     "html",
     "minifier",
@@ -10,9 +10,14 @@
     "terser"
   ],
   "version": "1.2.0",
-  "main": "src/index.js",
+  "main": "src/index.ts",
+  "bin": {
+    "html-bundle-minifier": "./bin/cli.ts"
+  },
   "scripts": {
-    "run": "node src/index.js"
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js"
   },
   "author": "Spark4444",
   "license": "MIT",
@@ -20,7 +25,16 @@
     "type": "git",
     "url": "https://github.com/Spark4444/HTMLBundleMinifier"
   },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
   "dependencies": {
     "html-minifier-terser": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
