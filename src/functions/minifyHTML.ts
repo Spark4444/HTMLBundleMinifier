@@ -2,7 +2,7 @@
 import { cssRegex, jsRegex } from "../regex";
 
 // Minify HTML files using html-minifier-terser
-async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string | false, jsContent: string | false) {
+async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, minifyCSS: boolean = true, minifyJS: boolean = true): Promise<void> {
 
     const fs = require("fs");
     const minify = require("html-minifier-terser").minify;
@@ -10,10 +10,11 @@ async function minifyHTML(htmlContent: string, outputFile: string, cssContent: s
     // Minify each related CSS and JS content and store them inside the HTML and save it to the output file
     try {
         // Replace CSS and JS links in the HTML if it's not false e.g. if the user specified the option to not minify CSS or JS
-        if (cssContent !== false) {
+        if (minifyCSS) {
             htmlContent = htmlContent.replace(cssRegex, `<style>${cssContent}</style>`);
         }
-        if (jsContent !== false) {
+        
+        if (minifyJS) {
             htmlContent = htmlContent.replace(jsRegex, `<script>${jsContent}</script>`);
         }
 
@@ -38,6 +39,12 @@ async function minifyHTML(htmlContent: string, outputFile: string, cssContent: s
         });
 
         // If the user specified to not minify CSS or JS, remove the links from the HTML without minifying them
+        if (!minifyCSS) {
+            minifiedHtml = minifiedHtml.replace(cssRegex, `<style>${cssContent}</style>`);
+        }
+        if (!minifyJS) {
+            minifiedHtml = minifiedHtml.replace(jsRegex, `<script>${jsContent}</script>`);
+        }
 
         // Write the minified HTML to the output file
         fs.writeFileSync(outputFile, minifiedHtml, "utf8");

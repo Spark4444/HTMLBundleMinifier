@@ -55,11 +55,15 @@ async function findFiles(regex: RegExp, content: string, type: string, inputFile
             } 
             else {
                 console.warn(`${type} File not found: ${filePath}`);
-                let question = await askQuestion(`Do you want to continue without this ${type} file? (yes/no): `);
+                let question = await askQuestion(`Do you want to continue without this ${type} file? (yes/no, default is no): `);
                 if (question.toLowerCase() !== "yes") {
                     console.log("Exiting...");
                     readline.close();
                     process.exit(0);
+                }
+                else {
+                    console.log(`Continuing without ${type} file: ${filePath}`);
+                    console.log("\n");
                 }
             }
         }
