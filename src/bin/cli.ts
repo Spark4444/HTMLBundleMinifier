@@ -9,7 +9,7 @@ const main = require(path.join(__dirname, "../", "index"));
 const args = process.argv.slice(2);
 const version = require("../../package.json").version;
 
-// Options example: html-bundle-minifier input.html output.min.html --no-css --no-js
+// Options example: html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
 function parseOptions(args: string[]): void {
     let optionList: string[] = [
         "--help", 
