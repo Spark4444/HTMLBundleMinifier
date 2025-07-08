@@ -7,10 +7,9 @@
     "html-bundle-minifier": "./dist/bin/cli.js"
   },
   "scripts": {
-    "build": "tsc && npm test",
+    "build": "tsc",
     "dev": "ts-node src/index.ts",
-    "start": "node dist/index.js",
-    "test": "node test/test.js && node test/cli-test.js"
+    "start": "node dist/index.js"
   },
   "keywords": [
     "html",

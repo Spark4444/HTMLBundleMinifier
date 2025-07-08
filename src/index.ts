@@ -7,6 +7,7 @@ import { readline, askQuestion, promptForMinificationOption, findFiles } from ".
 import { minifyHTML, bundleHTML } from "./functions/minifyHTML";
 import mergeFiles from "./functions/mergeFiles";
 import { cssRegex, jsRegex } from "./regex";
+import { log, error, success } from "./functions/colors";
 
 
 // Options explanation:
@@ -33,7 +34,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
 
         // Display welcome message only once on the first run
         if (welcomeMessage) {
-            console.log("\nWelcome to the HTML Bundle Minifier! \n This tool will minify your HTML files along with their related CSS and JS files. \n You can exit at any time by typing 'exit'.");
+            log("\nWelcome to the HTML Bundle Minifier! \n This tool will minify your HTML files along with their related CSS and JS files. \n You can exit at any time by typing 'exit'.");
         }
 
 
@@ -42,16 +43,17 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
             inputFile = await askQuestion("Enter the path to the HTML file: ");
         }
         else if (verbose) {
-            console.log(`\nUsing provided input file: ${inputFile}`);
+            success(`\nUsing provided input file: ${inputFile}`);
         }
 
         let stringInputFile: string = inputFile as string;
 
         // Check if the input file exists and prompt for a valid path if it doesn't
-        while (!fs.existsSync(stringInputFile)) {
-            console.error(`Input file does not exist: ${stringInputFile}`);
+        while (!fs.existsSync(stringInputFile) || !stringInputFile.endsWith(".html")) {
+            error(`Input file does not exist/is not a valid: ${stringInputFile}`);
             stringInputFile = await askQuestion("Please enter a valid path to the HTML file (hint enter 'exit' to quit): ");
         }
+        verbose && success(`Input file exists: ${stringInputFile}`);
 
 
         // Prompt for output file if not provided
@@ -59,14 +61,14 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
             outputFile = await askQuestion("Enter the path to save the minified HTML file (leave empty for default 'filename.min.html'): ");
         }
         else if (outputFile !== "" && verbose) {
-            console.log(`\nUsing provided output file: ${outputFile}`);
+            success(`\nUsing provided output file: ${outputFile}`);
         }
 
         let stringOutputFile: string = outputFile as string;
 
         // Check if the output file is a valid path and ends with .html and prompt for a valid path if it doesn't
         while (!stringOutputFile.endsWith(".html") && stringOutputFile !== "") {
-            console.error(`Output file must be an HTML file: ${stringOutputFile}`);
+            error(`Output file must be an HTML file: ${stringOutputFile}`);
             stringOutputFile = await askQuestion("Please enter a valid path to save the minified HTML file (hint enter 'exit' to quit or leave empty for default): ");
         }
 
@@ -74,8 +76,11 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         if (stringOutputFile === "") {
             stringOutputFile  = path.basename(stringInputFile, path.extname(stringInputFile)) + ".min.html";
             stringOutputFile  = path.resolve(path.dirname(stringInputFile), stringOutputFile);
-            verbose && console.log(`No output file specified. Using default: ${stringOutputFile}`);
-        }   
+            verbose && success(`No output file specified. Using default: ${stringOutputFile}`);
+        }
+        else if (verbose) {
+            success(`Output file is valid: ${stringOutputFile}`);
+        }
 
         // Prompt for minification options if not running with CLI args
         if (!noPrompts) {
@@ -93,7 +98,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         let compiledJS: string = "";
 
         if (verbose) {
-            console.log("\n");
+            log("\n");
         }
 
         // Compile CSS and JS files into a single string
@@ -104,7 +109,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         compiledJS = mergeFiles(jsFiles);
 
         if (compiledCSS || compiledJS && verbose) {
-            console.log("\n");
+            log("\n");
         }
 
         // Minify HTML
@@ -115,7 +120,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
             // Otherwise, minify the HTML file with the provided options
             await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifyCSS, minifyJS, verbose);
         }
-        verbose && console.log("Minification process completed.");
+        verbose && success("Minification process completed.");
 
         welcomeMessage = false; // Disable welcome message after the first run
         
@@ -127,7 +132,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
             // Exit if the user doesn't exactly type "no" instead of doing it vica versa
             if (exitQuestion !== "n" && exitQuestion !== "no") {
                 running = false;
-                console.log("Exiting...");
+                log("Exiting...");
                 readline.close();
                 process.exit(0);
             }
@@ -135,7 +140,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         else {
             // If no prompts are required, exit after the first run
             running = false;
-            console.log("Exiting...");
+            log("Exiting...");
             readline.close();
             process.exit(0);
         }

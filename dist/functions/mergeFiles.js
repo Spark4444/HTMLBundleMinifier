@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
+const colors_1 = require("./colors");
 // Function to merge the content of multiple files into a single string
 // For the js and css files
 function mergeFiles(fileList) {
@@ -10,8 +11,8 @@ function mergeFiles(fileList) {
             const content = fs.readFileSync(file, "utf8");
             mergedContent += content + "\n"; // Add a newline for separation
         }
-        catch (error) {
-            console.error(`Error reading file ${file}:`, error);
+        catch (err) {
+            (0, colors_1.error)(`Error reading file ${file}:`, err);
         }
     }
     return mergedContent;

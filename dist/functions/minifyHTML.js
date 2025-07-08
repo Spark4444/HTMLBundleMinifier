@@ -4,6 +4,7 @@ exports.minifyHTML = minifyHTML;
 exports.bundleHTML = bundleHTML;
 // Regex patterns for CSS and JS links in HTML saved in regex.json
 const regex_1 = require("../regex");
+const colors_1 = require("./colors");
 // Minify HTML files using html-minifier-terser
 async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minifyCSS = true, minifyJS = true, verbose) {
     const fs = require("fs");
@@ -45,10 +46,10 @@ async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minify
         }
         // Write the minified HTML to the output file
         fs.writeFileSync(outputFile, minifiedHtml, "utf8");
-        verbose && console.log(`Minified HTML saved to ${outputFile}`);
+        verbose && (0, colors_1.success)(`Minified HTML saved to ${outputFile}`);
     }
-    catch (error) {
-        console.error("Error minifying HTML:", error);
+    catch (err) {
+        (0, colors_1.error)("Error minifying HTML:", err);
     }
 }
 // Bundle HTML by replacing CSS and JS links with their content
@@ -63,10 +64,10 @@ async function bundleHTML(inputFile, outputFile, cssContent, jsContent, verbose)
         htmlContent = htmlContent.replace(regex_1.jsRegex, `<script>${jsContent}</script>`);
         // Write the bundled HTML to the output file
         fs.writeFileSync(outputFile, htmlContent, "utf8");
-        verbose && console.log(`Bundled HTML saved to ${outputFile}`);
+        verbose && (0, colors_1.success)(`Bundled HTML saved to ${outputFile}`);
     }
-    catch (error) {
-        console.error("Error bundling HTML:", error);
+    catch (err) {
+        (0, colors_1.error)("Error bundling HTML:", err);
     }
 }
 //# sourceMappingURL=minifyHTML.js.map

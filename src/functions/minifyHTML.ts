@@ -1,5 +1,6 @@
 // Regex patterns for CSS and JS links in HTML saved in regex.json
 import { cssRegex, jsRegex } from "../regex";
+import { error, success } from "./colors";
 
 // Minify HTML files using html-minifier-terser
 export async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, minifyCSS: boolean = true, minifyJS: boolean = true, verbose: boolean): Promise<void> {
@@ -48,10 +49,10 @@ export async function minifyHTML(htmlContent: string, outputFile: string, cssCon
 
         // Write the minified HTML to the output file
         fs.writeFileSync(outputFile, minifiedHtml, "utf8");
-        verbose && console.log(`Minified HTML saved to ${outputFile}`);
+        verbose && success(`Minified HTML saved to ${outputFile}`);
     } 
-    catch (error) {
-        console.error("Error minifying HTML:", error);
+    catch (err) {
+        error("Error minifying HTML:", err);
     }
 }
 
@@ -70,9 +71,9 @@ export async function bundleHTML(inputFile: string, outputFile: string, cssConte
 
         // Write the bundled HTML to the output file
         fs.writeFileSync(outputFile, htmlContent, "utf8");
-        verbose && console.log(`Bundled HTML saved to ${outputFile}`);
+        verbose && success(`Bundled HTML saved to ${outputFile}`);
     } 
-    catch (error) {
-        console.error("Error bundling HTML:", error);
+    catch (err) {
+        error("Error bundling HTML:", err);
     }
 }

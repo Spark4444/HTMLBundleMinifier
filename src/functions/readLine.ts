@@ -1,6 +1,7 @@
 let readline = require("readline");
 const fs = require("fs");
 const path = require("path");
+import { log, warning, success } from "./colors";
 
 readline = readline.createInterface({
     input: process.stdin,
@@ -9,12 +10,12 @@ readline = readline.createInterface({
 
 // Function to ask questions in the console via readline
 function askQuestion(query: string): Promise<string> {
-    console.log("\n");
+    log("\n");
     return new Promise(resolve => {
         readline.question(query, (answer: string) => {
             let trimmedAnswer: string = answer.trim().toLowerCase();
             if (trimmedAnswer.toLowerCase() === "exit") {
-                console.log("Exiting...");
+                log("Exiting...");
                 readline.close();
                 process.exit(0);
             }
@@ -27,11 +28,11 @@ function askQuestion(query: string): Promise<string> {
 async function promptForMinificationOption(varaible: boolean, fileType: string, verbose: boolean): Promise<boolean> {
     let prompt: string = await askQuestion(`Do you want to minify ${fileType} files? (y/n, default is y): `);
     if (prompt === "n" || prompt === "no") {
-        verbose && console.log(`Skipping ${fileType} minification.`);
+        verbose && success(`Skipping ${fileType} minification.`);
         varaible = false;
     }
     else {
-        verbose && console.log(`${fileType} will be minified.`);
+        verbose && success(`${fileType} will be minified.`);
         varaible = true;
     }
     return varaible;
@@ -46,7 +47,7 @@ async function findFiles(regex: RegExp, content: string, type: string, inputFile
 
             if (filePath.startsWith("http")) continue; // Skip external links
 
-            verbose && console.log(`Found ${type} file: ${filePath}`);
+            verbose && success(`Found ${type} file: ${filePath}`);
             filePath = path.resolve(path.dirname(inputFile), filePath);
             
             // Check if the file exists
@@ -54,16 +55,16 @@ async function findFiles(regex: RegExp, content: string, type: string, inputFile
                 result.push(filePath);
             } 
             else {
-                console.warn(`${type} File not found: ${filePath}`);
+                warning(`${type} File not found: ${filePath}`);
                 let question = await askQuestion(`Do you want to continue without this ${type} file? (y/n, default is n): `);
                 if (question !== "yes") {
-                    console.log("Exiting...");
+                    log("Exiting...");
                     readline.close();
                     process.exit(0);
                 }
                 else {
-                    console.log(`Continuing without ${type} file: ${filePath}`);
-                    console.log("\n");
+                    log(`Continuing without ${type} file: ${filePath}`);
+                    log("\n");
                 }
             }
         }
