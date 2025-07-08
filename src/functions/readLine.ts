@@ -57,7 +57,7 @@ async function findFiles(regex: RegExp, content: string, type: string, inputFile
             else {
                 warning(`${type} File not found: ${filePath}`);
                 let question = await askQuestion(`Do you want to continue without this ${type} file? (y/n, default is n): `);
-                if (question !== "yes") {
+                if (question !== "yes" && question !== "y") {
                     log("Exiting...");
                     readline.close();
                     process.exit(0);

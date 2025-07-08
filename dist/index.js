@@ -13,13 +13,14 @@ const mergeFiles_1 = __importDefault(require("./functions/mergeFiles"));
 const regex_1 = require("./regex");
 const colors_1 = require("./functions/colors");
 // Options explanation:
-// - inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
-// - outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
-// - minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
-// - minifyJS: Boolean indicating whether to minify JS files. Default is true.
-// - noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
-// - verbose: Boolean indicating whether to log detailed information during the process. Default is true.
-// - bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
+// 1. - inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
+// 2. - outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
+// 3. - minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
+// 4. - minifyJS: Boolean indicating whether to minify JS files. Default is true.
+// 5. - noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
+// 6. - verbose: Boolean indicating whether to log detailed information during the process. Default is true.
+// 7. - bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
+// 8. - welcomeMessage: Boolean indicating whether to display a welcome message. Default is true. used for second run.
 // Main function to handle the minification process
 async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, noPrompts = false, verbose = true, bundle = false, welcomeMessage = true) {
     // Disable welcome message if no prompts are required and second run
@@ -78,15 +79,13 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
     let jsFiles = [];
     let compiledCSS = "";
     let compiledJS = "";
-    if (verbose) {
-        (0, colors_1.log)("\n");
-    }
+    verbose && (0, colors_1.log)("\n");
     // Compile CSS and JS files into a single string
     cssFiles = await (0, readLine_1.findFiles)(regex_1.cssRegex, htmlContent, "CSS", stringInputFile, verbose);
     compiledCSS = (0, mergeFiles_1.default)(cssFiles);
     jsFiles = await (0, readLine_1.findFiles)(regex_1.jsRegex, htmlContent, "JS", stringInputFile, verbose);
     compiledJS = (0, mergeFiles_1.default)(jsFiles);
-    if (compiledCSS || compiledJS && verbose) {
+    if ((compiledCSS || compiledJS) && verbose) {
         (0, colors_1.log)("\n");
     }
     // Minify HTML
@@ -114,7 +113,7 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
             // Run the main function again with the same options to allow for another run
             // But this time without the welcome message
             // And also with prompts enabled to prompt for new minification options
-            main(undefined, undefined, true, true, false, true, false, false);
+            main(undefined, undefined, true, true, false, verbose, false, false);
         }
     }
     else {

@@ -11,13 +11,14 @@ import { log, error, success } from "./functions/colors";
 
 
 // Options explanation:
-// - inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
-// - outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
-// - minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
-// - minifyJS: Boolean indicating whether to minify JS files. Default is true.
-// - noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
-// - verbose: Boolean indicating whether to log detailed information during the process. Default is true.
-// - bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
+// 1. - inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
+// 2. - outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
+// 3. - minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
+// 4. - minifyJS: Boolean indicating whether to minify JS files. Default is true.
+// 5. - noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
+// 6. - verbose: Boolean indicating whether to log detailed information during the process. Default is true.
+// 7. - bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
+// 8. - welcomeMessage: Boolean indicating whether to display a welcome message. Default is true. used for second run.
 
 // Main function to handle the minification process
 async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean = true, minifyJS: boolean = true, noPrompts: boolean = false, verbose: boolean = true, bundle: boolean = false, welcomeMessage: boolean = true): Promise<void> {
@@ -91,9 +92,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
     let compiledCSS: string = "";
     let compiledJS: string = "";
 
-    if (verbose) {
-        log("\n");
-    }
+    verbose && log("\n");
 
     // Compile CSS and JS files into a single string
     cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile, verbose);
@@ -102,7 +101,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
     jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile, verbose);
     compiledJS = mergeFiles(jsFiles);
 
-    if (compiledCSS || compiledJS && verbose) {
+    if ((compiledCSS || compiledJS) && verbose) {
         log("\n");
     }
 
@@ -133,7 +132,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
             // Run the main function again with the same options to allow for another run
             // But this time without the welcome message
             // And also with prompts enabled to prompt for new minification options
-            main(undefined, undefined, true, true, false, true, false, false);
+            main(undefined, undefined, true, true, false, verbose, false, false);
         }
     }
     else {
