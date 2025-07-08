@@ -8,11 +8,19 @@ const fs = require("fs");
 const path = require("path");
 // imports
 const readLine_1 = require("./functions/readLine");
-const minifyHTML_1 = __importDefault(require("./functions/minifyHTML"));
+const minifyHTML_1 = require("./functions/minifyHTML");
 const mergeFiles_1 = __importDefault(require("./functions/mergeFiles"));
 const regex_1 = require("./regex");
+// Options explanation:
+// - inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
+// - outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
+// - minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
+// - minifyJS: Boolean indicating whether to minify JS files. Default is true.
+// - noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
+// - verbose: Boolean indicating whether to log detailed information during the process. Default is true.
+// - bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
 // Main function to handle the minification process
-async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, noPrompts = false) {
+async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, noPrompts = false, verbose = true, bundle = false) {
     // Main variable declarations
     let running = true;
     let welcomeMessage = true;
@@ -30,7 +38,7 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
         if (inputFile === undefined) {
             inputFile = await (0, readLine_1.askQuestion)("Enter the path to the HTML file: ");
         }
-        else {
+        else if (verbose) {
             console.log(`Using provided input file: ${inputFile}`);
         }
         let stringInputFile = inputFile;
@@ -39,10 +47,11 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
             console.error(`Input file does not exist: ${stringInputFile}`);
             stringInputFile = await (0, readLine_1.askQuestion)("Please enter a valid path to the HTML file (hint enter 'exit' to quit): ");
         }
+        // Prompt for output file if not provided
         if (outputFile === undefined) {
             outputFile = await (0, readLine_1.askQuestion)("Enter the path to save the minified HTML file (leave empty for default 'filename.min.html'): ");
         }
-        else if (outputFile !== undefined && outputFile !== "") {
+        else if (outputFile !== "" && verbose) {
             console.log(`Using provided output file: ${outputFile}`);
         }
         let stringOutputFile = outputFile;
@@ -55,12 +64,12 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
         if (stringOutputFile === "") {
             stringOutputFile = path.basename(stringInputFile, path.extname(stringInputFile)) + ".min.html";
             stringOutputFile = path.resolve(path.dirname(stringInputFile), stringOutputFile);
-            console.log(`No output file specified. Using default: ${stringOutputFile}`);
+            verbose && console.log(`No output file specified. Using default: ${stringOutputFile}`);
         }
         // Prompt for minification options if not running with CLI args
         if (!noPrompts) {
-            minifyCSS = await (0, readLine_1.promptForMinificationOption)(minifyCSS, "CSS");
-            minifyJS = await (0, readLine_1.promptForMinificationOption)(minifyJS, "JS");
+            minifyCSS = await (0, readLine_1.promptForMinificationOption)(minifyCSS, "CSS", verbose);
+            minifyJS = await (0, readLine_1.promptForMinificationOption)(minifyJS, "JS", verbose);
         }
         // Read the input file
         let htmlContent = fs.readFileSync(stringInputFile, "utf8");
@@ -71,23 +80,30 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
         let compiledJS = "";
         console.log("\n");
         // Compile CSS and JS files into a single string
-        cssFiles = await (0, readLine_1.findFiles)(regex_1.cssRegex, htmlContent, "CSS", stringInputFile);
+        cssFiles = await (0, readLine_1.findFiles)(regex_1.cssRegex, htmlContent, "CSS", stringInputFile, verbose);
         compiledCSS = (0, mergeFiles_1.default)(cssFiles);
-        jsFiles = await (0, readLine_1.findFiles)(regex_1.jsRegex, htmlContent, "JS", stringInputFile);
+        jsFiles = await (0, readLine_1.findFiles)(regex_1.jsRegex, htmlContent, "JS", stringInputFile, verbose);
         compiledJS = (0, mergeFiles_1.default)(jsFiles);
         if (compiledCSS || compiledJS) {
             console.log("\n");
         }
         // Minify HTML
-        await (0, minifyHTML_1.default)(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifyCSS, minifyJS);
-        console.log("Minification process completed.");
+        if (bundle) {
+            // If the user specified the --bundle option, bundle the CSS and JS files without minification
+            await (0, minifyHTML_1.bundleHTML)(stringInputFile, stringOutputFile, compiledCSS, compiledJS, verbose);
+        }
+        else {
+            // Otherwise, minify the HTML file with the provided options
+            await (0, minifyHTML_1.minifyHTML)(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifyCSS, minifyJS, verbose);
+        }
+        verbose && console.log("Minification process completed.");
         welcomeMessage = false; // Disable welcome message after the first run
         // If no prompts is set don't ask the user if they want to exit
         if (noPrompts === false) {
             // Close the readline interface if user wants to exit 
-            let exitQuestion = await (0, readLine_1.askQuestion)("Do you want to exit? (yes/no, default is yes): ");
+            let exitQuestion = await (0, readLine_1.askQuestion)("Do you want to exit? (y/n, default is y): ");
             // Exit if the user doesn't exactly type "no" instead of doing it vica versa
-            if (exitQuestion.toLowerCase() !== "no") {
+            if (exitQuestion !== "n" && exitQuestion !== "no") {
                 running = false;
                 console.log("Exiting...");
                 readLine_1.readline.close();

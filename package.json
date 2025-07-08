@@ -1,15 +1,7 @@
 {
   "name": "html-bundle-minifier",
+  "version": "1.7.0",
   "description": "A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS, and JavaScript files into a single optimized HTML file.",
-  "readme": "README.md",
-  "keywords": [
-    "html",
-    "minifier",
-    "bundle",
-    "minification",
-    "terser"
-  ],
-  "version": "1.5.0",
   "main": "src/index.ts",
   "bin": {
     "html-bundle-minifier": "./dist/bin/cli.js"
@@ -20,12 +12,20 @@
     "start": "node dist/index.js",
     "test": "node test/test.js && node test/cli-test.js"
   },
+  "keywords": [
+    "html",
+    "minifier",
+    "bundle",
+    "minification",
+    "terser"
+  ],
   "author": "Spark4444",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Spark4444/HTMLBundleMinifier"
   },
+  "readme": "README.md",
   "files": [
     "dist/",
     "README.md"

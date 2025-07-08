@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.minifyHTML = minifyHTML;
+exports.bundleHTML = bundleHTML;
 // Regex patterns for CSS and JS links in HTML saved in regex.json
 const regex_1 = require("../regex");
 // Minify HTML files using html-minifier-terser
-async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minifyCSS = true, minifyJS = true) {
+async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minifyCSS = true, minifyJS = true, verbose) {
     const fs = require("fs");
     const minify = require("html-minifier-terser").minify;
     // Minify each related CSS and JS content and store them inside the HTML and save it to the output file
@@ -43,11 +45,28 @@ async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minify
         }
         // Write the minified HTML to the output file
         fs.writeFileSync(outputFile, minifiedHtml, "utf8");
-        console.log(`Minified HTML saved to ${outputFile}`);
+        verbose && console.log(`Minified HTML saved to ${outputFile}`);
     }
     catch (error) {
         console.error("Error minifying HTML:", error);
     }
 }
-exports.default = minifyHTML;
+// Bundle HTML by replacing CSS and JS links with their content
+// This function is used when the user specifies the --bundle option
+async function bundleHTML(inputFile, outputFile, cssContent, jsContent, verbose) {
+    const fs = require("fs");
+    try {
+        // Read the HTML file content
+        let htmlContent = fs.readFileSync(inputFile, "utf8");
+        // Replace CSS and JS links in the HTML with the bundled content
+        htmlContent = htmlContent.replace(regex_1.cssRegex, `<style>${cssContent}</style>`);
+        htmlContent = htmlContent.replace(regex_1.jsRegex, `<script>${jsContent}</script>`);
+        // Write the bundled HTML to the output file
+        fs.writeFileSync(outputFile, htmlContent, "utf8");
+        verbose && console.log(`Bundled HTML saved to ${outputFile}`);
+    }
+    catch (error) {
+        console.error("Error bundling HTML:", error);
+    }
+}
 //# sourceMappingURL=minifyHTML.js.map

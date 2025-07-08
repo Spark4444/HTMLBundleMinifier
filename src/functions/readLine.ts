@@ -24,21 +24,21 @@ function askQuestion(query: string): Promise<string> {
 }
 
 // Function to prompt for minification options
-async function promptForMinificationOption(varaible: boolean, fileType: string): Promise<boolean> {
-    let prompt: string = await askQuestion(`Do you want to minify ${fileType} files? (yes/no, default is yes): `);
-    if (prompt.toLowerCase() === "no") {
-        console.log(`Skipping ${fileType} minification.`);
+async function promptForMinificationOption(varaible: boolean, fileType: string, verbose: boolean): Promise<boolean> {
+    let prompt: string = await askQuestion(`Do you want to minify ${fileType} files? (y/n, default is y): `);
+    if (prompt === "n" || prompt === "no") {
+        verbose && console.log(`Skipping ${fileType} minification.`);
         varaible = false;
     }
     else {
-        console.log(`${fileType} will be minified.`);
+        verbose && console.log(`${fileType} will be minified.`);
         varaible = true;
     }
     return varaible;
 }
 
 // Function to find CSS and JS files in the HTML content
-async function findFiles(regex: RegExp, content: string, type: string, inputFile: string): Promise<string[]> {
+async function findFiles(regex: RegExp, content: string, type: string, inputFile: string, verbose: boolean): Promise<string[]> {
         let match;
         let result: string[] = [];
         while ((match = regex.exec(content)) !== null) {
@@ -46,7 +46,7 @@ async function findFiles(regex: RegExp, content: string, type: string, inputFile
 
             if (filePath.startsWith("http")) continue; // Skip external links
 
-            console.log(`Found ${type} file: ${filePath}`);
+            verbose && console.log(`Found ${type} file: ${filePath}`);
             filePath = path.resolve(path.dirname(inputFile), filePath);
             
             // Check if the file exists
@@ -55,8 +55,8 @@ async function findFiles(regex: RegExp, content: string, type: string, inputFile
             } 
             else {
                 console.warn(`${type} File not found: ${filePath}`);
-                let question = await askQuestion(`Do you want to continue without this ${type} file? (yes/no, default is no): `);
-                if (question.toLowerCase() !== "yes") {
+                let question = await askQuestion(`Do you want to continue without this ${type} file? (y/n, default is n): `);
+                if (question !== "yes") {
                     console.log("Exiting...");
                     readline.close();
                     process.exit(0);

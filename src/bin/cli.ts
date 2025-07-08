@@ -10,6 +10,7 @@ const args = process.argv.slice(2);
 const version = require("../../package.json").version;
 
 // Options example: html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
+// This function parses the command line arguments and options
 function parseOptions(args: string[]): void {
     let optionList: string[] = [
         "--help", 
@@ -18,13 +19,19 @@ function parseOptions(args: string[]): void {
         "--no-js",
         "--input",
         "--output",
+        "--verbose",
+        "--bundle",
+        "--full-prompt",
         // Small versions of the options
         "-h", // --help
         "-v", // --version
         "-c", // --no-css
         "-j", // --no-js
         "-i", // --input
-        "-o"  // --output
+        "-o",  // --output
+        "-V",  // --verbose
+        "-b",   // --bundle
+        "-f"
     ];
 
     // Function to check if an argument is an option
@@ -39,12 +46,21 @@ function parseOptions(args: string[]): void {
             process.exit(1);
         });
     }
+    // If only verbose is requested, run the cli with verbose mode while enabling prompts
+    else if ((args[0] === "-V" || args[0] === "--verbose") && args.length === 1) {
+        console.log("Verbose mode is enabled. \n");
+        main(undefined, undefined, true, true, false, true).catch((error: Error) => {
+            console.error("An error occurred:", error);
+            process.exit(1);
+        });
+    }
     else {
         // If the user requested help or version, show it and exit and ignore the rest of the options
         //  help is the most important one then version and then the actual functionality
         if (args.includes("--help") || args.includes("-h")) {
-            console.log(`Usage: html-bundle-minifier [options] <inputFile> <outputFile>
+            console.log(`Usage: html-bundle-minifier [options] -o <inputFile> -o <outputFile>
 If nothing is specified you will be prompted for the input and output files and the minification options.
+
 Options:
 --help, -h          Show this help message
 --version, -v       Show the version of the HTML Bundle Minifier
@@ -52,10 +68,15 @@ Options:
 --no-js, -j         Do not minify JS files
 --input, -i         Specify the input HTML file (default: prompt)
 --output, -o        Specify the output HTML file (default: <inputFile>.min.html)
+--verbose, -V       Enable verbose mode (default: true)
+--bundle, -b        Bundle without minification (default: false)
+--full-prompt, -f   Enable full prompt mode (default: false)
+
 Examples:
-html-bundle-minifier input.html output.min.html --no-css --no-js
-html-bundle-minifier -i src/index.html -o dist/index.html --no-css
-html-bundle-minifier --config minify.config.js`);
+html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
+html-bundle-minifier -i input.html -o output.min.html --verbose
+html-bundle-minifier -i input.html -o output.min.html --bundle
+html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
             process.exit(0);
         }
         else if (args.includes("--version") || args.includes("-v")) {
@@ -68,6 +89,9 @@ html-bundle-minifier --config minify.config.js`);
             let outputFile: string | undefined = undefined;
             let minifyCSS: boolean = true;
             let minifyJS: boolean = true;
+            let verbose: boolean = false;
+            let bundle: boolean = false;
+            let noPrompts: boolean = true;
 
             let invalidOptions: string[] = [];
 
@@ -102,7 +126,7 @@ html-bundle-minifier --config minify.config.js`);
                 process.exit(1);
             }
 
-            // Parse the arguments
+            // Parse the arguments and enable/disable their respective options
             args.forEach((arg, index) => {
                 if (arg === "--no-css" || arg === "-c") {
                     minifyCSS = false;
@@ -130,20 +154,32 @@ html-bundle-minifier --config minify.config.js`);
                         outputFile = args[index + 1];
                     }
                 }
+                else if (arg === "--verbose" || arg === "-V") {
+                    verbose = true;
+                    console.log("Verbose mode is enabled. \n");
+                }
+                else if (arg === "--bundle" || arg === "-b") {
+                    bundle = true;
+                    verbose && console.log("Bundling mode is enabled. \n");
+                }
+                else if (arg === "--full-prompt" || arg === "-f") {
+                    noPrompts = false;
+                    verbose && console.log("Full prompt mode is enabled. \n");
+                }
             });
 
             // If input file is not provided warn the user
             if (!inputFile) {
-                console.warn("Input file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --input or -i option.");
+                console.warn("Input file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --input or -i option. \n");;
             }
 
             // If output file is not provided warn the user
             if (!outputFile) {
-                console.warn("Output file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --output or -o option.");
+                console.warn("Output file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --output or -o option. \n");
             }
 
             // Call the main function with the parsed options
-            main(inputFile, outputFile, minifyCSS, minifyJS, true).catch((error: Error) => {
+            main(inputFile, outputFile, minifyCSS, minifyJS, noPrompts, verbose, bundle).catch((error: Error) => {
                 console.error("An error occurred:", error);
                 process.exit(1);
             });

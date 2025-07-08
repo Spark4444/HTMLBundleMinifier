@@ -304,30 +304,6 @@ function testMainFunction() {
         }
     }
 
-    // Test 8: Error handling (invalid input file)
-    async function testErrorHandling() {
-        totalTests++;
-        log("\n📋 Test 8: Error handling (non-existent input file)", colors.yellow);
-        try {
-            const nonExistentFile = path.join(__dirname, "non-existent-file.html");
-            const outputFile = path.join(testConfig.outputDir, "error-test.min.html");
-            
-            // This test is skipped because the main function has an infinite loop
-            // when asking for a valid file path, and noPrompts=true doesn't prevent this
-            log("⚠️  Error handling test skipped (infinite loop issue with non-existent files)", colors.yellow);
-            log("   The main function keeps asking for valid input even with noPrompts=true", colors.yellow);
-            passedTests++; // Mark as passed to avoid failing the test suite
-            
-            // Uncomment below to test - will hang the test
-            // await main(nonExistentFile, outputFile, true, true, true);
-            
-        } catch (error) {
-            // This is expected behavior
-            log("✅ Error handling successful! Properly handled non-existent file", colors.green);
-            passedTests++;
-        }
-    }
-
     // Run all tests sequentially
     async function runAllTests() {
         await testFullMinification();
@@ -337,7 +313,6 @@ function testMainFunction() {
         await testDefaultOutputFile();
         await testFileSizeComparison();
         await testContentValidation();
-        await testErrorHandling();
 
         // Restore original process.exit
         process.exit = originalExit;

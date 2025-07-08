@@ -4,13 +4,22 @@ const path = require("path");
 
 // imports
 import { readline, askQuestion, promptForMinificationOption, findFiles } from "./functions/readLine";
-import minifyHTML from "./functions/minifyHTML";
+import { minifyHTML, bundleHTML } from "./functions/minifyHTML";
 import mergeFiles from "./functions/mergeFiles";
 import { cssRegex, jsRegex } from "./regex";
 
 
+// Options explanation:
+// - inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
+// - outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
+// - minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
+// - minifyJS: Boolean indicating whether to minify JS files. Default is true.
+// - noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
+// - verbose: Boolean indicating whether to log detailed information during the process. Default is true.
+// - bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
+
 // Main function to handle the minification process
-async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean = true, minifyJS: boolean = true, noPrompts: boolean = false) {
+async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean = true, minifyJS: boolean = true, noPrompts: boolean = false, verbose: boolean = true, bundle: boolean = false): Promise<void> {
     // Main variable declarations
     let running: boolean = true;
     let welcomeMessage: boolean = true;
@@ -32,7 +41,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         if (inputFile === undefined) {
             inputFile = await askQuestion("Enter the path to the HTML file: ");
         }
-        else {
+        else if (verbose) {
             console.log(`Using provided input file: ${inputFile}`);
         }
 
@@ -45,10 +54,11 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         }
 
 
+        // Prompt for output file if not provided
         if (outputFile === undefined) {
             outputFile = await askQuestion("Enter the path to save the minified HTML file (leave empty for default 'filename.min.html'): ");
         }
-        else if (outputFile !== undefined && outputFile !== "") {
+        else if (outputFile !== "" && verbose) {
             console.log(`Using provided output file: ${outputFile}`);
         }
 
@@ -64,13 +74,13 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         if (stringOutputFile === "") {
             stringOutputFile  = path.basename(stringInputFile, path.extname(stringInputFile)) + ".min.html";
             stringOutputFile  = path.resolve(path.dirname(stringInputFile), stringOutputFile);
-            console.log(`No output file specified. Using default: ${stringOutputFile}`);
+            verbose && console.log(`No output file specified. Using default: ${stringOutputFile}`);
         }   
 
         // Prompt for minification options if not running with CLI args
         if (!noPrompts) {
-            minifyCSS = await promptForMinificationOption(minifyCSS, "CSS");
-            minifyJS = await promptForMinificationOption(minifyJS, "JS");
+            minifyCSS = await promptForMinificationOption(minifyCSS, "CSS", verbose);
+            minifyJS = await promptForMinificationOption(minifyJS, "JS", verbose);
         }
 
         // Read the input file
@@ -85,10 +95,10 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         console.log("\n");
 
         // Compile CSS and JS files into a single string
-        cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile);
+        cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile, verbose);
         compiledCSS = mergeFiles(cssFiles);
 
-        jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile);
+        jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile, verbose);
         compiledJS = mergeFiles(jsFiles);
 
         if (compiledCSS || compiledJS) {
@@ -96,18 +106,24 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         }
 
         // Minify HTML
-        await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifyCSS, minifyJS);
-        console.log("Minification process completed.");
+        if (bundle) {
+            // If the user specified the --bundle option, bundle the CSS and JS files without minification
+            await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, verbose);
+        } else {
+            // Otherwise, minify the HTML file with the provided options
+            await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifyCSS, minifyJS, verbose);
+        }
+        verbose && console.log("Minification process completed.");
 
         welcomeMessage = false; // Disable welcome message after the first run
         
         // If no prompts is set don't ask the user if they want to exit
         if (noPrompts === false) {
             // Close the readline interface if user wants to exit 
-            let exitQuestion = await askQuestion("Do you want to exit? (yes/no, default is yes): ");
+            let exitQuestion = await askQuestion("Do you want to exit? (y/n, default is y): ");
 
             // Exit if the user doesn't exactly type "no" instead of doing it vica versa
-            if (exitQuestion.toLowerCase() !== "no") {
+            if (exitQuestion !== "n" && exitQuestion !== "no") {
                 running = false;
                 console.log("Exiting...");
                 readline.close();

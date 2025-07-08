@@ -54,6 +54,9 @@ html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
 | `--no-js` | `-j` | Skip JavaScript minification |
 | `--input` | `-i` | Specify input file |
 | `--output` | `-o` | Specify output file |
+| `--verbose` | `-v` | Enable verbose output |
+| `--bundle` | `-b` | Bundle CSS and JS into the HTML 
+| `--full-prompt` | `-f` | Enable full prompt mode (prompts for exiting and minifying option configuration) |
 
 #### CLI Examples
 
@@ -78,6 +81,12 @@ html-bundle-minifier --help
 
 # Check version
 html-bundle-minifier --version
+
+# Bundle HTML with CSS and JS (skip minification)
+html-bundle-minifier -i index.html -o bundle.min.html --bundle
+
+# Show verbose output
+html-bundle-minifier -i index.html -o bundle.min.html --verbose
 ```
 
 ### Programmatic Usage
@@ -89,10 +98,14 @@ const main = require('html-bundle-minifier');
 await main('input.html', 'output.min.html');
 
 // With options
-await main('input.html', 'output.min.html', true, true, true);
-//     inputFile    outputFile      minifyCSS minifyJS noPrompts
-// noPrompts will skip prompts for the minification options
-// It will also not show welcome message and exit prompt
+await main('input.html', 'output.min.html', true, true);
+// Arguments:
+// 1. Input file
+// 2. Output file
+// 3. Minify CSS (default: true)
+// 4. Minify JS (default: true)
+// 5. Verbose output (default: true)
+// 6. Bundle CSS and JS into HTML (default: false)
 ```
 
 ## Examples
@@ -184,12 +197,13 @@ Exiting...
 ```
 html-bundle-minifier/
 ├── src/
-│   ├── index.ts              # Main application logic
-│   ├── regex.ts              # Regular expressions for file detection
+│   ├── index.ts             # Main application logic
+│   ├── regex.ts             # Regular expressions for file detection
 │   ├── bin/
-│   │   └── cli.ts           # Command line interface
+│   │   └── cli.ts           # CLI
 │   └── functions/
-│       ├── mergeFiles.ts    # File merging utilities
+│       ├── colors.ts        # Console colors utils 
+│       ├── mergeFiles.ts    # File merging utils
 │       ├── minifyHTML.ts    # HTML minification logic
 │       └── readLine.ts      # User input handling
 ├── test/                    # Test files and examples
@@ -229,13 +243,6 @@ npm test
 ```bash
 npm run dev
 ```
-
-## Author
-
-**Spark4444**
-
-- GitHub: [@Spark4444](https://github.com/Spark4444)
-- Repository: [HTMLBundleMinifier](https://github.com/Spark4444/HTMLBundleMinifier)
 
 ## Support
 

@@ -2,7 +2,7 @@
 import { cssRegex, jsRegex } from "../regex";
 
 // Minify HTML files using html-minifier-terser
-async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, minifyCSS: boolean = true, minifyJS: boolean = true): Promise<void> {
+export async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, minifyCSS: boolean = true, minifyJS: boolean = true, verbose: boolean): Promise<void> {
 
     const fs = require("fs");
     const minify = require("html-minifier-terser").minify;
@@ -48,11 +48,31 @@ async function minifyHTML(htmlContent: string, outputFile: string, cssContent: s
 
         // Write the minified HTML to the output file
         fs.writeFileSync(outputFile, minifiedHtml, "utf8");
-        console.log(`Minified HTML saved to ${outputFile}`);
+        verbose && console.log(`Minified HTML saved to ${outputFile}`);
     } 
     catch (error) {
         console.error("Error minifying HTML:", error);
     }
 }
 
-export default minifyHTML;
+// Bundle HTML by replacing CSS and JS links with their content
+// This function is used when the user specifies the --bundle option
+export async function bundleHTML(inputFile: string, outputFile: string, cssContent: string, jsContent: string, verbose: boolean): Promise<void> {
+    const fs = require("fs");
+
+    try {
+        // Read the HTML file content
+        let htmlContent = fs.readFileSync(inputFile, "utf8");
+
+        // Replace CSS and JS links in the HTML with the bundled content
+        htmlContent = htmlContent.replace(cssRegex, `<style>${cssContent}</style>`);
+        htmlContent = htmlContent.replace(jsRegex, `<script>${jsContent}</script>`);
+
+        // Write the bundled HTML to the output file
+        fs.writeFileSync(outputFile, htmlContent, "utf8");
+        verbose && console.log(`Bundled HTML saved to ${outputFile}`);
+    } 
+    catch (error) {
+        console.error("Error bundling HTML:", error);
+    }
+}

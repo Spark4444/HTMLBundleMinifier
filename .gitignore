@@ -17,4 +17,4 @@ npm-debug.log*
 Thumbs.db
 # index.min.html file after bundling since it usually just to test the minifier manually
 # and the actual automated tests are located in output/ folder so there's no need to keep this file
-index.min.html
+test/index.min.html
