@@ -249,6 +249,11 @@ npm run dev
 npm run start
 ```
 
+### Test
+```bash
+npm run test
+```
+
 ## Support
 
 If you encounter any issues or have questions, please [open an issue](https://github.com/Spark4444/HTMLBundleMinifier/issues) on GitHub.

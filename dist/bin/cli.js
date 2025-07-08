@@ -36,6 +36,35 @@ function parseOptions(args) {
     function isAnOption(arg) {
         return optionList.includes(arg);
     }
+    let invalidOptions = [];
+    // Check for invalid options/non-existing options
+    args.forEach((arg, index) => {
+        // Check if the argument is an option
+        if (!isAnOption(arg)) {
+            // Check if the argument before is an I/O option
+            // List of i/o options
+            let IO_Options = ["--input", "-i", "--output", "-o"];
+            if (IO_Options.includes(args[index - 1])) {
+                // If the argument is not an option and the previous one is an i/o option, it's valid
+                return;
+            }
+            else {
+                // If the argument is not an option and the previous one is not an i/o option, it's invalid
+                invalidOptions.push(arg);
+            }
+        }
+    });
+    // If there are invalid options, show an error message displaying all the invalid options and exit
+    if (invalidOptions.length > 0) {
+        if (invalidOptions.length === 1) {
+            (0, colors_1.error)(`Invalid option: ${invalidOptions[0]}`);
+        }
+        else {
+            (0, colors_1.error)(`Invalid options: ${invalidOptions.join(", ")}`);
+        }
+        (0, colors_1.error)("Use --help or -h to see the available options.");
+        process.exit(1);
+    }
     // If no arguments are provided run the cli with prompts
     if (args.length === 0) {
         (0, colors_1.warning)("No arguments provided. You will be prompted for the input and output files and the minification options.");
@@ -84,35 +113,6 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
             let verbose = true;
             let bundle = false;
             let noPrompts = true;
-            let invalidOptions = [];
-            // Check for invalid options/non-existing options
-            args.forEach((arg, index) => {
-                // Check if the argument is an option
-                if (!isAnOption(arg)) {
-                    // Check if the argument before is an I/O option
-                    // List of i/o options
-                    let IO_Options = ["--input", "-i", "--output", "-o"];
-                    if (IO_Options.includes(args[index - 1])) {
-                        // If the argument is not an option and the previous one is an i/o option, it's valid
-                        return;
-                    }
-                    else {
-                        // If the argument is not an option and the previous one is not an i/o option, it's invalid
-                        invalidOptions.push(arg);
-                    }
-                }
-            });
-            // If there are invalid options, show an error message displaying all the invalid options and exit
-            if (invalidOptions.length > 0) {
-                if (invalidOptions.length === 1) {
-                    (0, colors_1.error)(`Invalid option: ${invalidOptions[0]}`);
-                }
-                else {
-                    (0, colors_1.error)(`Invalid options: ${invalidOptions.join(", ")}`);
-                }
-                (0, colors_1.error)("Use --help or -h to see the available options.");
-                process.exit(1);
-            }
             // Parse the arguments and enable/disable their respective options
             args.forEach((arg, index) => {
                 if (arg === "--no-css" || arg === "-c") {
