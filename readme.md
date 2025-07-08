@@ -11,6 +11,8 @@ A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS,
 - **Command Line Interface**: Easy-to-use CLI with various options
 - **Interactive Mode**: Prompts for input when no arguments are provided
 - **TypeScript Support**: Built with TypeScript for better type safety and development experience
+- **Verbose Logging**: Detailed output during the minification process
+- **Bundling Option**: Bundles CSS and JS files without minification and uses prettier to format the final HTML
 - **File Auto-detection**: Automatically detects linked CSS and JS files in your HTML
 
 ## Installation
@@ -100,12 +102,15 @@ await main('input.html', 'output.min.html');
 // With options
 await main('input.html', 'output.min.html', true, true);
 // Arguments:
-// 1. Input file
-// 2. Output file
-// 3. Minify CSS (default: true)
-// 4. Minify JS (default: true)
-// 5. Verbose output (default: true)
-// 6. Bundle CSS and JS into HTML (default: false)
+// 1. inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
+// 2. outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
+// 3. minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
+// 4. minifyJS: Boolean indicating whether to minify JS files. Default is true.
+// 5. noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
+// 6. verbose: Boolean indicating whether to log detailed information during the process. Default is true.
+// 7. bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
+// 8. welcomeMessage: Boolean indicating whether to display a welcome message. Default is true. used for second run.
+
 ```
 
 ## Examples
@@ -221,6 +226,7 @@ html-bundle-minifier/
 ## Dependencies
 
 - `html-minifier-terser`: For HTML minification
+- `prettier`: For prettifying html after bundling
 - `typescript`: For TypeScript support
 - `@types/node`: TypeScript definitions for Node.js
 
@@ -236,6 +242,11 @@ npm run build
 
 ```bash
 npm run dev
+```
+
+### Start
+```bash
+npm run start
 ```
 
 ## Support

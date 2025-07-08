@@ -11,14 +11,14 @@ import { log, error, success } from "./functions/colors";
 
 
 // Options explanation:
-// 1. - inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
-// 2. - outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
-// 3. - minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
-// 4. - minifyJS: Boolean indicating whether to minify JS files. Default is true.
-// 5. - noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
-// 6. - verbose: Boolean indicating whether to log detailed information during the process. Default is true.
-// 7. - bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
-// 8. - welcomeMessage: Boolean indicating whether to display a welcome message. Default is true. used for second run.
+// 1. inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
+// 2. outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
+// 3. minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
+// 4. minifyJS: Boolean indicating whether to minify JS files. Default is true.
+// 5. noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
+// 6. verbose: Boolean indicating whether to log detailed information during the process. Default is true.
+// 7. bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
+// 8. welcomeMessage: Boolean indicating whether to display a welcome message. Default is true. used for second run.
 
 // Main function to handle the minification process
 async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean = true, minifyJS: boolean = true, noPrompts: boolean = false, verbose: boolean = true, bundle: boolean = false, welcomeMessage: boolean = true): Promise<void> {

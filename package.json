@@ -30,7 +30,8 @@
     "README.md"
   ],
   "dependencies": {
-    "html-minifier-terser": "^7.2.0"
+    "html-minifier-terser": "^7.2.0",
+    "prettier": "^3.6.2"
   },
   "devDependencies": {
     "@types/node": "^24.0.10",
