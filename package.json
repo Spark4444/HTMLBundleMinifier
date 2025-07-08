@@ -1,6 +1,6 @@
 {
   "name": "html-bundle-minifier",
-  "version": "1.7.0",
+  "version": "1.9.0",
   "description": "A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS, and JavaScript files into a single optimized HTML file.",
   "main": "src/index.ts",
   "bin": {
