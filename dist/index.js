@@ -32,14 +32,14 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
         }
         // Display welcome message only once on the first run
         if (welcomeMessage) {
-            console.log("Welcome to the HTML Bundle Minifier! \n This tool will minify your HTML files along with their related CSS and JS files. \n You can exit at any time by typing 'exit'.");
+            console.log("\nWelcome to the HTML Bundle Minifier! \n This tool will minify your HTML files along with their related CSS and JS files. \n You can exit at any time by typing 'exit'.");
         }
         // If inputFile and outputFile are not provided, prompt the user for them
         if (inputFile === undefined) {
             inputFile = await (0, readLine_1.askQuestion)("Enter the path to the HTML file: ");
         }
         else if (verbose) {
-            console.log(`Using provided input file: ${inputFile}`);
+            console.log(`\nUsing provided input file: ${inputFile}`);
         }
         let stringInputFile = inputFile;
         // Check if the input file exists and prompt for a valid path if it doesn't
@@ -52,7 +52,7 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
             outputFile = await (0, readLine_1.askQuestion)("Enter the path to save the minified HTML file (leave empty for default 'filename.min.html'): ");
         }
         else if (outputFile !== "" && verbose) {
-            console.log(`Using provided output file: ${outputFile}`);
+            console.log(`\nUsing provided output file: ${outputFile}`);
         }
         let stringOutputFile = outputFile;
         // Check if the output file is a valid path and ends with .html and prompt for a valid path if it doesn't
@@ -78,13 +78,15 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
         let jsFiles = [];
         let compiledCSS = "";
         let compiledJS = "";
-        console.log("\n");
+        if (verbose) {
+            console.log("\n");
+        }
         // Compile CSS and JS files into a single string
         cssFiles = await (0, readLine_1.findFiles)(regex_1.cssRegex, htmlContent, "CSS", stringInputFile, verbose);
         compiledCSS = (0, mergeFiles_1.default)(cssFiles);
         jsFiles = await (0, readLine_1.findFiles)(regex_1.jsRegex, htmlContent, "JS", stringInputFile, verbose);
         compiledJS = (0, mergeFiles_1.default)(jsFiles);
-        if (compiledCSS || compiledJS) {
+        if (compiledCSS || compiledJS && verbose) {
             console.log("\n");
         }
         // Minify HTML

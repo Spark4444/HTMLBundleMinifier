@@ -58,8 +58,10 @@ function parseOptions(args: string[]): void {
         // If the user requested help or version, show it and exit and ignore the rest of the options
         //  help is the most important one then version and then the actual functionality
         if (args.includes("--help") || args.includes("-h")) {
-            console.log(`Usage: html-bundle-minifier [options] -o <inputFile> -o <outputFile>
+            console.log(`Usage: html-bundle-minifier [options] -i <inputFile> -o <outputFile>
 If nothing is specified you will be prompted for the input and output files and the minification options.
+Input/output files always need to be specified with the --input or -i and --output or -o options.
+You can also place options before or after or in middle of the input and output options.
 
 Options:
 --help, -h          Show this help message
@@ -170,12 +172,12 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
 
             // If input file is not provided warn the user
             if (!inputFile) {
-                console.warn("Input file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --input or -i option. \n");;
+                console.warn("Input file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --input or -i option.");;
             }
 
             // If output file is not provided warn the user
             if (!outputFile) {
-                console.warn("Output file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --output or -o option. \n");
+                console.warn("Output file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --output or -o option.");
             }
 
             // Call the main function with the parsed options

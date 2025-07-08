@@ -33,7 +33,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
 
         // Display welcome message only once on the first run
         if (welcomeMessage) {
-            console.log("Welcome to the HTML Bundle Minifier! \n This tool will minify your HTML files along with their related CSS and JS files. \n You can exit at any time by typing 'exit'.");
+            console.log("\nWelcome to the HTML Bundle Minifier! \n This tool will minify your HTML files along with their related CSS and JS files. \n You can exit at any time by typing 'exit'.");
         }
 
 
@@ -42,7 +42,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
             inputFile = await askQuestion("Enter the path to the HTML file: ");
         }
         else if (verbose) {
-            console.log(`Using provided input file: ${inputFile}`);
+            console.log(`\nUsing provided input file: ${inputFile}`);
         }
 
         let stringInputFile: string = inputFile as string;
@@ -59,7 +59,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
             outputFile = await askQuestion("Enter the path to save the minified HTML file (leave empty for default 'filename.min.html'): ");
         }
         else if (outputFile !== "" && verbose) {
-            console.log(`Using provided output file: ${outputFile}`);
+            console.log(`\nUsing provided output file: ${outputFile}`);
         }
 
         let stringOutputFile: string = outputFile as string;
@@ -92,7 +92,9 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         let compiledCSS: string = "";
         let compiledJS: string = "";
 
-        console.log("\n");
+        if (verbose) {
+            console.log("\n");
+        }
 
         // Compile CSS and JS files into a single string
         cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile, verbose);
@@ -101,7 +103,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile, verbose);
         compiledJS = mergeFiles(jsFiles);
 
-        if (compiledCSS || compiledJS) {
+        if (compiledCSS || compiledJS && verbose) {
             console.log("\n");
         }
 
