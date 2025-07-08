@@ -20,130 +20,127 @@ import { log, error, success } from "./functions/colors";
 // - bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
 
 // Main function to handle the minification process
-async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean = true, minifyJS: boolean = true, noPrompts: boolean = false, verbose: boolean = true, bundle: boolean = false): Promise<void> {
-    // Main variable declarations
-    let running: boolean = true;
-    let welcomeMessage: boolean = true;
+async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean = true, minifyJS: boolean = true, noPrompts: boolean = false, verbose: boolean = true, bundle: boolean = false, welcomeMessage: boolean = true): Promise<void> {
+    // Disable welcome message if no prompts are required and second run
+    if (noPrompts) {
+        welcomeMessage = false;
+    }
 
-    while (running) {
-        // Disable welcome message if no prompts are required and second run
-        if (noPrompts) {
-            running = false; 
-            welcomeMessage = false;
-        }
-
-        // Display welcome message only once on the first run
-        if (welcomeMessage) {
-            log("\nWelcome to the HTML Bundle Minifier! \n This tool will minify your HTML files along with their related CSS and JS files. \n You can exit at any time by typing 'exit'.");
-        }
+    // Display welcome message only once on the first run
+    if (welcomeMessage) {
+        log("\nWelcome to the HTML Bundle Minifier! \n This tool will minify your HTML files along with their related CSS and JS files. \n You can exit at any time by typing 'exit'.");
+    }
 
 
-        // If inputFile and outputFile are not provided, prompt the user for them
-        if (inputFile === undefined) {
-            inputFile = await askQuestion("Enter the path to the HTML file: ");
-        }
-        else if (verbose) {
-            success(`\nUsing provided input file: ${inputFile}`);
-        }
+    // If inputFile and outputFile are not provided, prompt the user for them
+    if (inputFile === undefined) {
+        inputFile = await askQuestion("Enter the path to the HTML file: ");
+    }
+    else if (verbose) {
+        success(`\nUsing provided input file: ${inputFile}`);
+    }
 
-        let stringInputFile: string = inputFile as string;
+    let stringInputFile: string = inputFile as string;
 
-        // Check if the input file exists and prompt for a valid path if it doesn't
-        while (!fs.existsSync(stringInputFile) || !stringInputFile.endsWith(".html")) {
-            error(`Input file does not exist/is not a valid: ${stringInputFile}`);
-            stringInputFile = await askQuestion("Please enter a valid path to the HTML file (hint enter 'exit' to quit): ");
-        }
-        verbose && success(`Input file exists: ${stringInputFile}`);
+    // Check if the input file exists and prompt for a valid path if it doesn't
+    while (!fs.existsSync(stringInputFile) || !stringInputFile.endsWith(".html")) {
+        error(`Input file does not exist/is not valid: ${stringInputFile}`);
+        stringInputFile = await askQuestion("Please enter a valid path to the HTML file (hint enter 'exit' to quit): ");
+    }
+    verbose && success(`Input file exists: ${stringInputFile}`);
 
 
-        // Prompt for output file if not provided
-        if (outputFile === undefined) {
-            outputFile = await askQuestion("Enter the path to save the minified HTML file (leave empty for default 'filename.min.html'): ");
-        }
-        else if (outputFile !== "" && verbose) {
-            success(`\nUsing provided output file: ${outputFile}`);
-        }
+    // Prompt for output file if not provided
+    if (outputFile === undefined) {
+        outputFile = await askQuestion("Enter the path to save the minified HTML file (leave empty for default 'filename.min.html'): ");
+    }
+    else if (outputFile !== "" && verbose) {
+        success(`\nUsing provided output file: ${outputFile}`);
+    }
 
-        let stringOutputFile: string = outputFile as string;
+    let stringOutputFile: string = outputFile as string;
 
-        // Check if the output file is a valid path and ends with .html and prompt for a valid path if it doesn't
-        while (!stringOutputFile.endsWith(".html") && stringOutputFile !== "") {
-            error(`Output file must be an HTML file: ${stringOutputFile}`);
-            stringOutputFile = await askQuestion("Please enter a valid path to save the minified HTML file (hint enter 'exit' to quit or leave empty for default): ");
-        }
+    // Check if the output file is a valid path and ends with .html and prompt for a valid path if it doesn't
+    while (!stringOutputFile.endsWith(".html") && stringOutputFile !== "") {
+        error(`Output file must be an HTML file: ${stringOutputFile}`);
+        stringOutputFile = await askQuestion("Please enter a valid path to save the minified HTML file (hint enter 'exit' to quit or leave empty for default): ");
+    }
 
-        // If no output file is specified, use the default name
-        if (stringOutputFile === "") {
-            stringOutputFile  = path.basename(stringInputFile, path.extname(stringInputFile)) + ".min.html";
-            stringOutputFile  = path.resolve(path.dirname(stringInputFile), stringOutputFile);
-            verbose && success(`No output file specified. Using default: ${stringOutputFile}`);
-        }
-        else if (verbose) {
-            success(`Output file is valid: ${stringOutputFile}`);
-        }
+    // If no output file is specified, use the default name
+    if (stringOutputFile === "") {
+        stringOutputFile  = path.basename(stringInputFile, path.extname(stringInputFile)) + ".min.html";
+        stringOutputFile  = path.resolve(path.dirname(stringInputFile), stringOutputFile);
+        verbose && success(`No output file specified. Using default: ${stringOutputFile}`);
+    }
+    else if (verbose) {
+        success(`Output file is valid: ${stringOutputFile}`);
+    }
 
-        // Prompt for minification options if not running with CLI args
-        if (!noPrompts) {
-            minifyCSS = await promptForMinificationOption(minifyCSS, "CSS", verbose);
-            minifyJS = await promptForMinificationOption(minifyJS, "JS", verbose);
-        }
+    // Prompt for minification options if not running with CLI args
+    if (!noPrompts) {
+        minifyCSS = await promptForMinificationOption(minifyCSS, "CSS", verbose);
+        minifyJS = await promptForMinificationOption(minifyJS, "JS", verbose);
+    }
 
-        // Read the input file
-        let htmlContent = fs.readFileSync(stringInputFile, "utf8");
+    // Read the input file
+    let htmlContent = fs.readFileSync(stringInputFile, "utf8");
 
-        // Find related CSS and JS files
-        let cssFiles: string[] = [];
-        let jsFiles: string[] = [];
-        let compiledCSS: string = "";
-        let compiledJS: string = "";
+    // Find related CSS and JS files
+    let cssFiles: string[] = [];
+    let jsFiles: string[] = [];
+    let compiledCSS: string = "";
+    let compiledJS: string = "";
 
-        if (verbose) {
-            log("\n");
-        }
+    if (verbose) {
+        log("\n");
+    }
 
-        // Compile CSS and JS files into a single string
-        cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile, verbose);
-        compiledCSS = mergeFiles(cssFiles);
+    // Compile CSS and JS files into a single string
+    cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile, verbose);
+    compiledCSS = mergeFiles(cssFiles);
 
-        jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile, verbose);
-        compiledJS = mergeFiles(jsFiles);
+    jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile, verbose);
+    compiledJS = mergeFiles(jsFiles);
 
-        if (compiledCSS || compiledJS && verbose) {
-            log("\n");
-        }
+    if (compiledCSS || compiledJS && verbose) {
+        log("\n");
+    }
 
-        // Minify HTML
-        if (bundle) {
-            // If the user specified the --bundle option, bundle the CSS and JS files without minification
-            await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, verbose);
-        } else {
-            // Otherwise, minify the HTML file with the provided options
-            await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifyCSS, minifyJS, verbose);
-        }
-        verbose && success("Minification process completed.");
+    // Minify HTML
+    if (bundle) {
+        // If the user specified the --bundle option, bundle the CSS and JS files without minification
+        await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, verbose);
+    } else {
+        // Otherwise, minify the HTML file with the provided options
+        await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifyCSS, minifyJS, verbose);
+    }
+    verbose && success("Minification process completed.");
 
-        welcomeMessage = false; // Disable welcome message after the first run
-        
-        // If no prompts is set don't ask the user if they want to exit
-        if (noPrompts === false) {
-            // Close the readline interface if user wants to exit 
-            let exitQuestion = await askQuestion("Do you want to exit? (y/n, default is y): ");
+    welcomeMessage = false; // Disable welcome message after the first run
+    
+    // If no prompts is set don't ask the user if they want to exit
+    if (noPrompts === false) {
+        // Close the readline interface if user wants to exit 
+        let exitQuestion = await askQuestion("Do you want to exit? (y/n, default is y): ");
 
-            // Exit if the user doesn't exactly type "no" instead of doing it vica versa
-            if (exitQuestion !== "n" && exitQuestion !== "no") {
-                running = false;
-                log("Exiting...");
-                readline.close();
-                process.exit(0);
-            }
-        }
-        else {
-            // If no prompts are required, exit after the first run
-            running = false;
+        // Exit if the user doesn't exactly type "no" instead of doing it vica versa
+        if (exitQuestion !== "n" && exitQuestion !== "no") {
             log("Exiting...");
             readline.close();
             process.exit(0);
         }
+        else {
+            // Run the main function again with the same options to allow for another run
+            // But this time without the welcome message
+            // And also with prompts enabled to prompt for new minification options
+            main(undefined, undefined, true, true, false, true, false, false);
+        }
+    }
+    else {
+        // If no prompts are required, exit after the first run
+        log("Exiting...");
+        readline.close();
+        process.exit(0);
     }
 }
 

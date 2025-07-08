@@ -232,12 +232,6 @@ html-bundle-minifier/
 npm run build
 ```
 
-### Test
-
-```bash
-npm test
-```
-
 ### Development Mode
 
 ```bash
