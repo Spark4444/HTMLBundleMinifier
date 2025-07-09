@@ -6,6 +6,36 @@
     <title>HTML Bundle Minifier Test Page</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/additional-styles.css">
+    <link rel="stylesheet" href="css/non-existent.css">
+    <style>
+        /* Inline styles for quick testing */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+        }
+        header h1 {
+            margin: 0;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -113,5 +143,8 @@
     <!-- External JavaScript files -->
     <script src="js/main.js"></script>
     <script src="js/utils.js"></script>
+    <script>
+        console.log("Inline script running after external scripts");
+    </script>
 </body>
 </html>

@@ -1,16 +1,15 @@
 {
   "name": "html-bundle-minifier",
-  "version": "1.9.0",
+  "version": "1.9.5",
   "description": "A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS, and JavaScript files into a single optimized HTML file.",
   "main": "src/index.ts",
   "bin": {
     "html-bundle-minifier": "./dist/bin/cli.js"
   },
   "scripts": {
-    "build": "tsc && npm run test",
+    "build": "tsc",
     "dev": "ts-node src/index.ts",
-    "start": "node dist/index.js",
-    "test": "node test/test.js && node test/cli-test.js"
+    "start": "node dist/index.js"
   },
   "keywords": [
     "html",

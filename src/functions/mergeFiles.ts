@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 import { error } from "./colors";
 
 // Function to merge the content of multiple files into a single string

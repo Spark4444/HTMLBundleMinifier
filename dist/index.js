@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Varable declarations
-const fs = require("fs");
-const path = require("path");
-// imports
+// Imports for the main
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+// Functions and regex imports
 const readLine_1 = require("./functions/readLine");
 const minifyHTML_1 = require("./functions/minifyHTML");
 const mergeFiles_1 = __importDefault(require("./functions/mergeFiles"));
@@ -40,7 +40,7 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
     }
     let stringInputFile = inputFile;
     // Check if the input file exists and prompt for a valid path if it doesn't
-    while (!fs.existsSync(stringInputFile) || !stringInputFile.endsWith(".html")) {
+    while (!fs_1.default.existsSync(stringInputFile) || !stringInputFile.endsWith(".html")) {
         (0, colors_1.error)(`Input file does not exist/is not valid: ${stringInputFile}`);
         stringInputFile = await (0, readLine_1.askQuestion)("Please enter a valid path to the HTML file (hint enter 'exit' to quit): ");
     }
@@ -60,8 +60,8 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
     }
     // If no output file is specified, use the default name
     if (stringOutputFile === "") {
-        stringOutputFile = path.basename(stringInputFile, path.extname(stringInputFile)) + ".min.html";
-        stringOutputFile = path.resolve(path.dirname(stringInputFile), stringOutputFile);
+        stringOutputFile = path_1.default.basename(stringInputFile, path_1.default.extname(stringInputFile)) + ".min.html";
+        stringOutputFile = path_1.default.resolve(path_1.default.dirname(stringInputFile), stringOutputFile);
         verbose && (0, colors_1.success)(`No output file specified. Using default: ${stringOutputFile}`);
     }
     else if (verbose) {
@@ -73,7 +73,7 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
         minifyJS = await (0, readLine_1.promptForMinificationOption)(minifyJS, "JS", verbose);
     }
     // Read the input file
-    let htmlContent = fs.readFileSync(stringInputFile, "utf8");
+    let htmlContent = fs_1.default.readFileSync(stringInputFile, "utf8");
     // Find related CSS and JS files
     let cssFiles = [];
     let jsFiles = [];
@@ -81,9 +81,10 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
     let compiledJS = "";
     verbose && (0, colors_1.log)("\n");
     // Compile CSS and JS files into a single string
-    cssFiles = await (0, readLine_1.findFiles)(regex_1.cssRegex, htmlContent, "CSS", stringInputFile, verbose);
+    cssFiles = await (0, readLine_1.findFiles)(regex_1.cssRegex, htmlContent, "CSS", stringInputFile, verbose, noPrompts);
     compiledCSS = (0, mergeFiles_1.default)(cssFiles);
-    jsFiles = await (0, readLine_1.findFiles)(regex_1.jsRegex, htmlContent, "JS", stringInputFile, verbose);
+    verbose && (0, colors_1.log)("\n");
+    jsFiles = await (0, readLine_1.findFiles)(regex_1.jsRegex, htmlContent, "JS", stringInputFile, verbose, noPrompts);
     compiledJS = (0, mergeFiles_1.default)(jsFiles);
     if ((compiledCSS || compiledJS) && verbose) {
         (0, colors_1.log)("\n");
@@ -106,7 +107,7 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
         // Exit if the user doesn't exactly type "no" instead of doing it vica versa
         if (exitQuestion !== "n" && exitQuestion !== "no") {
             (0, colors_1.log)("Exiting...");
-            readLine_1.readline.close();
+            readLine_1.rs.close();
             process.exit(0);
         }
         else {
@@ -119,7 +120,7 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
     else {
         // If no prompts are required, exit after the first run
         (0, colors_1.log)("Exiting...");
-        readLine_1.readline.close();
+        readLine_1.rs.close();
         process.exit(0);
     }
 }

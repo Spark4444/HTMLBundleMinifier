@@ -1,9 +1,9 @@
-// Varable declarations
-const fs = require("fs");
-const path = require("path");
+// Imports for the main
+import fs from "fs";
+import path from "path";
 
-// imports
-import { readline, askQuestion, promptForMinificationOption, findFiles } from "./functions/readLine";
+// Functions and regex imports
+import { rs, askQuestion, promptForMinificationOption, findFiles } from "./functions/readLine";
 import { minifyHTML, bundleHTML } from "./functions/minifyHTML";
 import mergeFiles from "./functions/mergeFiles";
 import { cssRegex, jsRegex } from "./regex";
@@ -95,10 +95,12 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
     verbose && log("\n");
 
     // Compile CSS and JS files into a single string
-    cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile, verbose);
+    cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile, verbose, noPrompts);
     compiledCSS = mergeFiles(cssFiles);
 
-    jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile, verbose);
+    verbose && log("\n");
+
+    jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile, verbose, noPrompts);
     compiledJS = mergeFiles(jsFiles);
 
     if ((compiledCSS || compiledJS) && verbose) {
@@ -125,7 +127,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
         // Exit if the user doesn't exactly type "no" instead of doing it vica versa
         if (exitQuestion !== "n" && exitQuestion !== "no") {
             log("Exiting...");
-            readline.close();
+            rs.close();
             process.exit(0);
         }
         else {
@@ -138,7 +140,7 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
     else {
         // If no prompts are required, exit after the first run
         log("Exiting...");
-        readline.close();
+        rs.close();
         process.exit(0);
     }
 }
