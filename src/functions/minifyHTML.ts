@@ -62,15 +62,15 @@ export async function minifyHTML(htmlContent: string, outputFile: string, cssCon
         }
 
         let minifiedHtml = await minify(htmlContent, {
-            collapseWhitespace: true,
-            removeComments: true,
-            minifyCSS: true,
+            collapseWhitespace: true, // Remove unnecessary whitespace
+            removeComments: true, // Remove comments
+            minifyCSS: true, // Minify CSS
             minifyJS: {
-                mangle: true,
-                compress: {
-                    drop_console: false,
-                    drop_debugger: true,
-                    pure_funcs: []
+                mangle: true, // Mangle JS variable names e.g. `let myVariable = 1;` to `let a = 1;` and etc in alphabetical order
+                compress: { // Compress JS code
+                    drop_console: false, // Do not drop console statements
+                    drop_debugger: true, // Drop debugger statements
+                    pure_funcs: [] // List of functions to be removed from the code
                 }
             },
             processScripts: ["text/javascript"]
