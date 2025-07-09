@@ -10,7 +10,6 @@ const path_1 = __importDefault(require("path"));
 const readLine_1 = require("./functions/readLine");
 const minifyHTML_1 = require("./functions/minifyHTML");
 const mergeFiles_1 = __importDefault(require("./functions/mergeFiles"));
-const regex_1 = require("./regex");
 const colors_1 = require("./functions/colors");
 // Options explanation:
 // 1. inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
@@ -81,10 +80,10 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
     let compiledJS = "";
     verbose && (0, colors_1.log)("\n");
     // Compile CSS and JS files into a single string
-    cssFiles = await (0, readLine_1.findFiles)(regex_1.cssRegex, htmlContent, "CSS", stringInputFile, verbose, noPrompts);
+    cssFiles = await (0, readLine_1.findFiles)(htmlContent, "CSS", stringInputFile, verbose, noPrompts);
     compiledCSS = (0, mergeFiles_1.default)(cssFiles);
     verbose && (0, colors_1.log)("\n");
-    jsFiles = await (0, readLine_1.findFiles)(regex_1.jsRegex, htmlContent, "JS", stringInputFile, verbose, noPrompts);
+    jsFiles = await (0, readLine_1.findFiles)(htmlContent, "JS", stringInputFile, verbose, noPrompts);
     compiledJS = (0, mergeFiles_1.default)(jsFiles);
     if ((compiledCSS || compiledJS) && verbose) {
         (0, colors_1.log)("\n");

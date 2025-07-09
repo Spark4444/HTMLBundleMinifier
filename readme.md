@@ -12,8 +12,8 @@ A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS,
 - **Interactive Mode**: Prompts for input when no arguments are provided
 - **TypeScript Support**: Built with TypeScript for better type safety and development experience
 - **Verbose Logging**: Detailed output during the minification process
-- **Bundling Option**: Bundles CSS and JS files without minification and uses prettier to format the final HTML
-- **File Auto-detection**: Automatically detects linked CSS and JS files in your HTML
+- **Bundling Options**: Bundles CSS and JS files without minification and uses prettier to format the final HTML
+- **File Auto-detection**: Automatically detects linked CSS and JS files in your HTML and inline styles/scripts
 
 ## Installation
 

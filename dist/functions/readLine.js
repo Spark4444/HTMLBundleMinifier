@@ -11,6 +11,7 @@ const readline_1 = __importDefault(require("readline"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const colors_1 = require("./colors");
+const regex_1 = require("../regex");
 const rs = readline_1.default.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -45,10 +46,12 @@ async function promptForMinificationOption(varaible, fileType, verbose) {
     return varaible;
 }
 // Function to find CSS and JS files in the HTML content
-async function findFiles(regex, content, type, inputFile, verbose, noPrompts) {
+async function findFiles(content, type, inputFile, verbose, noPrompts) {
     let match;
     let result = [];
-    while ((match = regex.exec(content)) !== null) {
+    let srcRegex = type === "CSS" ? regex_1.linkRegex : regex_1.scriptRegex;
+    let contentRegex = type === "CSS" ? regex_1.styleRegex : regex_1.inlineScriptRegex;
+    while ((match = srcRegex.exec(content)) !== null) {
         let filePath = match[1];
         if (filePath.startsWith("http"))
             continue; // Skip external links
@@ -56,7 +59,10 @@ async function findFiles(regex, content, type, inputFile, verbose, noPrompts) {
         filePath = path_1.default.resolve(path_1.default.dirname(inputFile), filePath);
         // Check if the file exists
         if (fs_1.default.existsSync(filePath)) {
-            result.push(filePath);
+            result.push({
+                type: "path",
+                content: filePath
+            });
         }
         else if (!noPrompts) {
             !verbose && !noPrompts && (0, colors_1.log)("\n");
@@ -77,6 +83,17 @@ async function findFiles(regex, content, type, inputFile, verbose, noPrompts) {
             (0, colors_1.warning)(`File ${filePath} does not exist, continuing without it. \n If you want to configure this behavior use the -f or --full-prompt flags when running the CLI.`);
             !verbose && (0, colors_1.log)("\n");
         }
+    }
+    // Find inline CSS or JS content
+    while ((match = contentRegex.exec(content)) !== null) {
+        let inlineContent = match[1];
+        if (inlineContent.trim()) {
+            verbose && (0, colors_1.success)(`Found inline ${type} content.`);
+        }
+        result.push({
+            type: "inline",
+            content: inlineContent
+        });
     }
     return result;
 }

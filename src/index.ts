@@ -6,8 +6,12 @@ import path from "path";
 import { rs, askQuestion, promptForMinificationOption, findFiles } from "./functions/readLine";
 import { minifyHTML, bundleHTML } from "./functions/minifyHTML";
 import mergeFiles from "./functions/mergeFiles";
-import { cssRegex, jsRegex } from "./regex";
 import { log, error, success } from "./functions/colors";
+
+interface FileItem {
+    type: "inline" | "path";
+    content: string;
+}
 
 
 // Options explanation:
@@ -87,20 +91,20 @@ async function main(inputFile?: string, outputFile?: string, minifyCSS: boolean 
     let htmlContent = fs.readFileSync(stringInputFile, "utf8");
 
     // Find related CSS and JS files
-    let cssFiles: string[] = [];
-    let jsFiles: string[] = [];
+    let cssFiles: FileItem[] = [];
+    let jsFiles: FileItem[] = [];
     let compiledCSS: string = "";
     let compiledJS: string = "";
 
     verbose && log("\n");
 
     // Compile CSS and JS files into a single string
-    cssFiles = await findFiles(cssRegex, htmlContent, "CSS", stringInputFile, verbose, noPrompts);
+    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, verbose, noPrompts);
     compiledCSS = mergeFiles(cssFiles);
 
     verbose && log("\n");
 
-    jsFiles = await findFiles(jsRegex, htmlContent, "JS", stringInputFile, verbose, noPrompts);
+    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, verbose, noPrompts);
     compiledJS = mergeFiles(jsFiles);
 
     if ((compiledCSS || compiledJS) && verbose) {

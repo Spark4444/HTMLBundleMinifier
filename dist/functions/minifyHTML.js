@@ -43,10 +43,7 @@ const prettier = __importStar(require("prettier"));
 function replaceCSSJSLinks(htmlContent, content, tag) {
     if (content.trim()) {
         if (tag === "css") {
-            // Remove all <link> tags for stylesheets
-            htmlContent = htmlContent.replace(regex_1.cssRegex, "");
-            // Remove all existing <style> tags (inline CSS)
-            htmlContent = htmlContent.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");
+            htmlContent = htmlContent.replace(regex_1.removeStylesAndLinksRegex, ""); // Remove all <link> and <style> tags
             // Insert the compiled CSS in the <head>
             const headCloseIndex = htmlContent.indexOf("</head>");
             if (headCloseIndex !== -1) {
@@ -62,9 +59,7 @@ function replaceCSSJSLinks(htmlContent, content, tag) {
             }
         }
         else {
-            // Remove all <script> tags (both with src and inline)
-            htmlContent = htmlContent.replace(regex_1.jsRegex, "");
-            htmlContent = htmlContent.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
+            htmlContent = htmlContent.replace(regex_1.removeAllScriptsRegex, ""); // Remove all <script> tags
             // Insert the compiled JS before </body>
             const bodyCloseIndex = htmlContent.lastIndexOf("</body>");
             if (bodyCloseIndex !== -1) {
@@ -97,12 +92,7 @@ async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minify
             removeComments: true,
             minifyCSS: true,
             minifyJS: {
-                mangle: {
-                    toplevel: true,
-                    properties: {
-                        regex: /^[a-zA-Z_$][a-zA-Z0-9_$]*$/
-                    }
-                },
+                mangle: true,
                 compress: {
                     drop_console: false,
                     drop_debugger: true,

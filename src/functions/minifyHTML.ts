@@ -1,5 +1,5 @@
 // Regex patterns for CSS and JS links in HTML saved in regex.json
-import { cssRegex, jsRegex } from "../regex";
+import { removeStylesAndLinksRegex, removeAllScriptsRegex } from "../regex";
 import { error, success, warning } from "./colors";
 import * as prettier from "prettier";
 
@@ -7,11 +7,7 @@ import * as prettier from "prettier";
 function replaceCSSJSLinks(htmlContent: string, content: string, tag: string): string {
     if (content.trim()) {
         if (tag === "css") {
-            // Remove all <link> tags for stylesheets
-            htmlContent = htmlContent.replace(cssRegex, "");
-
-            // Remove all existing <style> tags (inline CSS)
-            htmlContent = htmlContent.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");
+            htmlContent = htmlContent.replace(removeStylesAndLinksRegex, ""); // Remove all <link> and <style> tags
 
 
             // Insert the compiled CSS in the <head>
@@ -30,9 +26,7 @@ function replaceCSSJSLinks(htmlContent: string, content: string, tag: string): s
         }
 
         else {
-            // Remove all <script> tags (both with src and inline)
-            htmlContent = htmlContent.replace(jsRegex, "");
-            htmlContent = htmlContent.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
+            htmlContent = htmlContent.replace(removeAllScriptsRegex, ""); // Remove all <script> tags
 
             // Insert the compiled JS before </body>
             const bodyCloseIndex = htmlContent.lastIndexOf("</body>");
@@ -53,7 +47,6 @@ function replaceCSSJSLinks(htmlContent: string, content: string, tag: string): s
 
 // Minify HTML files using html-minifier-terser
 export async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, minifyCSS: boolean = true, minifyJS: boolean = true, verbose: boolean): Promise<void> {
-
     const fs = require("fs");
     const minify = require("html-minifier-terser").minify;
 
@@ -73,12 +66,7 @@ export async function minifyHTML(htmlContent: string, outputFile: string, cssCon
             removeComments: true,
             minifyCSS: true,
             minifyJS: {
-                mangle: {
-                    toplevel: true,
-                    properties: {
-                        regex: /^[a-zA-Z_$][a-zA-Z0-9_$]*$/
-                    }
-                },
+                mangle: true,
                 compress: {
                     drop_console: false,
                     drop_debugger: true,

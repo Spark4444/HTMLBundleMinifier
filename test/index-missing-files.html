@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Bundle Minifier Test Page</title>
+    <title>HTML Bundle Minifier Test - Missing Files Scenario</title>
     
     <!-- External CSS Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     
-    <!-- Local CSS Files -->
+    <!-- Local CSS Files (EXISTING) -->
     <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Local CSS Files (NON-EXISTENT) -->
+    <link rel="stylesheet" href="css/missing-styles.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="assets/animations.css">
     
     <!-- Inline Styles -->
     <style>
@@ -61,16 +68,27 @@
             border-radius: 10px;
             margin: 20px 0;
         }
+        
+        .error-indicator {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>HTML Bundle Minifier Test Page</h1>
+        <h1>HTML Bundle Minifier Test - Missing Files Scenario</h1>
         <nav>
             <ul>
                 <li><a href="#features">Features</a></li>
                 <li><a href="#demo">Demo</a></li>
                 <li><a href="#test-results">Test Results</a></li>
+                <li><a href="#missing-files">Missing Files</a></li>
             </ul>
         </nav>
     </header>
@@ -82,28 +100,28 @@
                 <div class="col-md-3">
                     <div class="enhanced-card">
                         <h3><i class="fab fa-css3-alt text-primary"></i> CSS Handling</h3>
-                        <p>Tests inline styles, local CSS files, and external CDN libraries.</p>
+                        <p>Tests inline styles, existing CSS files, missing CSS files, and external CDN libraries.</p>
                         <div class="badge bg-success">Enhanced</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="enhanced-card">
                         <h3><i class="fab fa-js-square text-warning"></i> JavaScript Processing</h3>
-                        <p>Handles inline scripts, local JS files, and external libraries.</p>
+                        <p>Handles inline scripts, existing JS files, missing JS files, and external libraries.</p>
                         <div class="badge bg-info">Interactive</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="enhanced-card">
-                        <h3><i class="fas fa-compress-alt text-danger"></i> Minification</h3>
-                        <p>Compresses HTML, CSS, and JavaScript for optimal performance.</p>
-                        <div class="badge bg-primary">Optimized</div>
+                        <h3><i class="fas fa-exclamation-triangle text-danger"></i> Error Handling</h3>
+                        <p>Tests how the minifier handles missing or non-existent resource files.</p>
+                        <div class="badge bg-danger">Critical</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="enhanced-card">
                         <h3><i class="fas fa-layer-group text-success"></i> Bundling</h3>
-                        <p>Combines multiple resources into a single optimized file.</p>
+                        <p>Combines available resources while handling missing files gracefully.</p>
                         <div class="badge bg-secondary">Bundled</div>
                     </div>
                 </div>
@@ -149,6 +167,72 @@
             </div>
         </section>
 
+        <section id="missing-files">
+            <h2><i class="fas fa-exclamation-triangle"></i> Missing Files Test</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="enhanced-card">
+                        <h3><i class="fab fa-css3-alt"></i> Missing CSS Files</h3>
+                        <div class="error-indicator">
+                            <i class="fas fa-times-circle"></i> The following CSS files are intentionally missing:
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>css/missing-styles.css</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>css/theme.css</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>css/components.css</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>styles/layout.css</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>assets/animations.css</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="enhanced-card">
+                        <h3><i class="fab fa-js-square"></i> Missing JS Files</h3>
+                        <div class="error-indicator">
+                            <i class="fas fa-times-circle"></i> The following JS files are intentionally missing:
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>js/missing-script.js</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>js/components.js</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>js/helpers.js</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>scripts/analytics.js</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>assets/vendor.js</span>
+                                <span class="badge bg-danger">404</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="test-results">
             <h2><i class="fas fa-chart-line"></i> Test Results</h2>
             <div class="row">
@@ -168,21 +252,22 @@
                 </div>
                 <div class="col-md-4">
                     <div class="enhanced-card text-center">
-                        <i class="fas fa-percentage fa-2x text-danger mb-2"></i>
-                        <h4>Compression Ratio</h4>
-                        <span id="compression-ratio" class="h3 text-dark">Run minifier to see</span>
+                        <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                        <h4>Missing Files</h4>
+                        <span id="missing-count" class="h3 text-danger">10</span>
                     </div>
                 </div>
             </div>
             
             <div class="enhanced-card mt-4">
-                <h3><i class="fas fa-list-ol"></i> How to Test:</h3>
+                <h3><i class="fas fa-list-ol"></i> How to Test Missing Files:</h3>
                 <ol class="list-group list-group-numbered">
-                    <li class="list-group-item">Save this file as test.html</li>
+                    <li class="list-group-item">Save this file as test-missing-files.html</li>
                     <li class="list-group-item">Run the minifier: <code class="bg-light p-1 rounded">npm run</code></li>
                     <li class="list-group-item">When prompted, enter the path to this file</li>
-                    <li class="list-group-item">Check the generated .min.html file</li>
-                    <li class="list-group-item">Compare file sizes and functionality</li>
+                    <li class="list-group-item">Check how the minifier handles missing file references</li>
+                    <li class="list-group-item">Verify error handling and fallback behavior</li>
+                    <li class="list-group-item">Compare output with the regular test file</li>
                 </ol>
             </div>
         </section>
@@ -192,14 +277,16 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
-                    <p><i class="fas fa-copyright"></i> 2025 HTML Bundle Minifier Test. Enhanced testing with multiple resource types.</p>
+                    <p><i class="fas fa-copyright"></i> 2025 HTML Bundle Minifier Test. Testing missing file scenarios.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="d-flex flex-wrap gap-2">
                         <span class="badge bg-primary">External CSS: 2</span>
-                        <span class="badge bg-warning">Local CSS: 1</span>
-                        <span class="badge bg-success">External JS: 2</span>
-                        <span class="badge bg-info">Local JS: 1</span>
+                        <span class="badge bg-success">Local CSS: 1</span>
+                        <span class="badge bg-danger">Missing CSS: 5</span>
+                        <span class="badge bg-primary">External JS: 2</span>
+                        <span class="badge bg-success">Local JS: 1</span>
+                        <span class="badge bg-danger">Missing JS: 5</span>
                         <span class="badge bg-secondary">Elements: <span id="element-count">0</span></span>
                     </div>
                 </div>
@@ -211,20 +298,31 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Local JavaScript Files -->
+    <!-- Local JavaScript Files (EXISTING) -->
     <script src="js/utils.js"></script>
+    
+    <!-- Local JavaScript Files (NON-EXISTENT) -->
+    <script src="js/missing-script.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="scripts/analytics.js"></script>
+    <script src="assets/vendor.js"></script>
     
     <!-- Inline JavaScript -->
     <script>
         // Inline critical JavaScript functionality
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Enhanced HTML Bundle Minifier Test Page loaded!');
+            console.log('Enhanced HTML Bundle Minifier Test Page (Missing Files) loaded!');
+            console.warn('This test file includes references to missing CSS and JS files.');
             
             // Initialize text processor
             initializeTextProcessor();
             initializeChart();
             updateElementCount();
             displayPageSize();
+            
+            // Test for missing files
+            checkMissingFiles();
         });
 
         // Simplified text processing
@@ -250,7 +348,8 @@
                         <strong>Original:</strong> ${inputText}<br>
                         <strong>Reversed:</strong> ${reversed}<br>
                         <strong>Length:</strong> ${inputText.length} characters<br>
-                        <strong>Processed at:</strong> ${timestamp}
+                        <strong>Processed at:</strong> ${timestamp}<br>
+                        <em class="text-muted">Processed despite missing file references</em>
                     `;
                     
                     output.innerHTML = processed;
@@ -279,14 +378,14 @@
                 myChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['CSS Files', 'JS Files', 'Images', 'Other'],
+                        labels: ['Existing Files', 'Missing Files', 'External Files', 'Inline Code'],
                         datasets: [{
-                            data: [3, 3, 0, 1],
+                            data: [2, 10, 4, 2],
                             backgroundColor: [
-                                '#FF6B6B',
-                                '#4ECDC4',
-                                '#45B7D1',
-                                '#96CEB4'
+                                '#4CAF50',
+                                '#F44336',
+                                '#2196F3',
+                                '#FF9800'
                             ],
                             borderWidth: 2
                         }]
@@ -299,7 +398,7 @@
                             },
                             title: {
                                 display: true,
-                                text: 'Resource Distribution'
+                                text: 'File Status Distribution'
                             }
                         }
                     }
@@ -310,10 +409,10 @@
                 if (updateBtn) {
                     updateBtn.addEventListener('click', function() {
                         const newData = [
-                            Math.floor(Math.random() * 10) + 1,
-                            Math.floor(Math.random() * 10) + 1,
-                            Math.floor(Math.random() * 5),
-                            Math.floor(Math.random() * 3) + 1
+                            Math.floor(Math.random() * 5) + 1,
+                            Math.floor(Math.random() * 15) + 5,
+                            Math.floor(Math.random() * 8) + 2,
+                            Math.floor(Math.random() * 5) + 1
                         ];
                         myChart.data.datasets[0].data = newData;
                         myChart.update();
@@ -341,6 +440,54 @@
                 }, 20);
             }
         }
+
+        // Check for missing files (simulated)
+        function checkMissingFiles() {
+            console.log('Checking for missing files...');
+            
+            const missingCssFiles = [
+                'css/missing-styles.css',
+                'css/theme.css', 
+                'css/components.css',
+                'styles/layout.css',
+                'assets/animations.css'
+            ];
+            
+            const missingJsFiles = [
+                'js/missing-script.js',
+                'js/components.js',
+                'js/helpers.js',
+                'scripts/analytics.js',
+                'assets/vendor.js'
+            ];
+            
+            console.warn('Missing CSS files:', missingCssFiles);
+            console.warn('Missing JS files:', missingJsFiles);
+            
+            // Update missing count display
+            const missingCountElement = document.getElementById('missing-count');
+            if (missingCountElement) {
+                const totalMissing = missingCssFiles.length + missingJsFiles.length;
+                missingCountElement.textContent = totalMissing;
+            }
+            
+            // Add warning to console
+            console.log('%cThis is intentional for testing purposes!', 'color: orange; font-weight: bold;');
+        }
+
+        // Function that would be in missing-script.js (but file doesn't exist)
+        function missingFunction() {
+            console.log('This function should be in a missing file');
+        }
+        
+        // Try to call a function that should be in utils.js (this one exists)
+        setTimeout(() => {
+            if (typeof displayPageSize === 'function') {
+                console.log('✓ utils.js loaded successfully');
+            } else {
+                console.error('✗ utils.js failed to load or function missing');
+            }
+        }, 1000);
     </script>
 </body>
 </html>

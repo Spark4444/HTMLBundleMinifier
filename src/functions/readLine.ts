@@ -2,6 +2,12 @@ import readline from "readline";
 import fs from "fs";
 import path from "path";
 import { log, warning, success } from "./colors";
+import { linkRegex, scriptRegex,  styleRegex, inlineScriptRegex } from "../regex";
+
+interface FileItem {
+    type: "inline" | "path";
+    content: string;
+}
 
 const rs = readline.createInterface({
     input: process.stdin,
@@ -39,10 +45,13 @@ async function promptForMinificationOption(varaible: boolean, fileType: string, 
 }
 
 // Function to find CSS and JS files in the HTML content
-async function findFiles(regex: RegExp, content: string, type: string, inputFile: string, verbose: boolean, noPrompts: boolean): Promise<string[]> {
+async function findFiles(content: string, type: string, inputFile: string, verbose: boolean, noPrompts: boolean): Promise<FileItem[]> {
         let match;
-        let result: string[] = [];
-        while ((match = regex.exec(content)) !== null) {
+        let result: FileItem[] = [];
+        let srcRegex = type === "CSS" ? linkRegex : scriptRegex;
+        let contentRegex = type === "CSS" ? styleRegex : inlineScriptRegex;
+
+        while ((match = srcRegex.exec(content)) !== null) {
             let filePath = match[1];
 
             if (filePath.startsWith("http")) continue; // Skip external links
@@ -52,7 +61,10 @@ async function findFiles(regex: RegExp, content: string, type: string, inputFile
             
             // Check if the file exists
             if (fs.existsSync(filePath)) {
-                result.push(filePath);
+                result.push({
+                    type: "path",
+                    content: filePath
+                });
             } 
             else if (!noPrompts) {
                 !verbose && !noPrompts && log("\n");
@@ -73,6 +85,18 @@ async function findFiles(regex: RegExp, content: string, type: string, inputFile
                 warning(`File ${filePath} does not exist, continuing without it. \n If you want to configure this behavior use the -f or --full-prompt flags when running the CLI.`);
                 !verbose && log("\n");
             }
+        }
+
+        // Find inline CSS or JS content
+        while ((match = contentRegex.exec(content)) !== null) {
+            let inlineContent = match[1];
+            if (inlineContent.trim()) {
+                verbose && success(`Found inline ${type} content.`);
+            }
+            result.push({
+                type: "inline",
+                content: inlineContent
+            });
         }
 
         return result;
