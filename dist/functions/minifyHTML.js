@@ -32,48 +32,16 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.minifyHTML = minifyHTML;
 exports.bundleHTML = bundleHTML;
 // Regex patterns for CSS and JS links in HTML saved in regex.json
-const regex_1 = require("../regex");
 const colors_1 = require("./colors");
 const prettier = __importStar(require("prettier"));
-// Function to replace CSS and JS links in HTML with their content
-function replaceCSSJSLinks(htmlContent, content, tag) {
-    if (content.trim()) {
-        if (tag === "css") {
-            htmlContent = htmlContent.replace(regex_1.removeStylesAndLinksRegex, ""); // Remove all <link> and <style> tags
-            // Insert the compiled CSS in the <head>
-            const headCloseIndex = htmlContent.indexOf("</head>");
-            if (headCloseIndex !== -1) {
-                htmlContent = htmlContent.slice(0, headCloseIndex) + `<style>\n${content}</style>\n` + htmlContent.slice(headCloseIndex);
-            }
-            else {
-                // If no </head> tag found, add at the beginning of <body> or document
-                (0, colors_1.warning)("No </head> tag found in the HTML. Adding CSS at the beginning of <body> or document.");
-                const bodyIndex = htmlContent.indexOf("<body");
-                if (bodyIndex !== -1) {
-                    htmlContent = htmlContent.slice(0, bodyIndex) + `<style>\n${content}</style>\n` + htmlContent.slice(bodyIndex);
-                }
-            }
-        }
-        else {
-            htmlContent = htmlContent.replace(regex_1.removeAllScriptsRegex, ""); // Remove all <script> tags
-            // Insert the compiled JS before </body>
-            const bodyCloseIndex = htmlContent.lastIndexOf("</body>");
-            if (bodyCloseIndex !== -1) {
-                htmlContent = htmlContent.slice(0, bodyCloseIndex) + `<script>\n${content}</script>\n` + htmlContent.slice(bodyCloseIndex);
-            }
-            else {
-                // If no </body> tag found, add at the end of the document
-                (0, colors_1.warning)("No </body> tag found in the HTML. Adding JS at the end of the document.");
-                htmlContent += `<script>\n${content}</script>`;
-            }
-        }
-    }
-    return htmlContent;
-}
+const replaceCSSJSLinks_1 = __importDefault(require("./replaceCSSJSLinks"));
 // Minify HTML files using html-minifier-terser
 async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minifyCSS = true, minifyJS = true, verbose) {
     const fs = require("fs");
@@ -82,31 +50,31 @@ async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minify
     try {
         // Remove all existing CSS and JS tags (both linked and inline)
         if (minifyCSS) {
-            htmlContent = replaceCSSJSLinks(htmlContent, cssContent, "css");
+            htmlContent = (0, replaceCSSJSLinks_1.default)(htmlContent, cssContent, "css");
         }
         if (minifyJS) {
-            htmlContent = replaceCSSJSLinks(htmlContent, jsContent, "js");
+            htmlContent = (0, replaceCSSJSLinks_1.default)(htmlContent, jsContent, "js");
         }
         let minifiedHtml = await minify(htmlContent, {
-            collapseWhitespace: true,
-            removeComments: true,
-            minifyCSS: true,
+            collapseWhitespace: true, // Remove unnecessary whitespace
+            removeComments: true, // Remove comments
+            minifyCSS: true, // Minify CSS
             minifyJS: {
-                mangle: true,
+                mangle: true, // Mangle JS variable names e.g. `let myVariable = 1;` to `let a = 1;` and etc in alphabetical order
                 compress: {
-                    drop_console: false,
-                    drop_debugger: true,
-                    pure_funcs: []
+                    drop_console: false, // Do not drop console statements
+                    drop_debugger: true, // Drop debugger statements
+                    pure_funcs: [] // List of functions to be removed from the code
                 }
             },
             processScripts: ["text/javascript"]
         });
         // If the user specified to not minify CSS or JS, replace the links after minification
         if (!minifyCSS) {
-            minifiedHtml = replaceCSSJSLinks(minifiedHtml, cssContent, "css");
+            minifiedHtml = (0, replaceCSSJSLinks_1.default)(minifiedHtml, cssContent, "css");
         }
         if (!minifyJS) {
-            minifiedHtml = replaceCSSJSLinks(minifiedHtml, jsContent, "js");
+            minifiedHtml = (0, replaceCSSJSLinks_1.default)(minifiedHtml, jsContent, "js");
         }
         // Write the minified HTML to the output file
         fs.writeFileSync(outputFile, minifiedHtml, "utf8");
@@ -123,8 +91,8 @@ async function bundleHTML(inputFile, outputFile, cssContent, jsContent, verbose)
     try {
         // Read the HTML file content
         let htmlContent = fs.readFileSync(inputFile, "utf8");
-        htmlContent = replaceCSSJSLinks(htmlContent, cssContent, "css");
-        htmlContent = replaceCSSJSLinks(htmlContent, jsContent, "js");
+        htmlContent = (0, replaceCSSJSLinks_1.default)(htmlContent, cssContent, "css");
+        htmlContent = (0, replaceCSSJSLinks_1.default)(htmlContent, jsContent, "js");
         const prettifiedHtml = await prettier.format(htmlContent, {
             parser: "html",
             printWidth: 120, // Longer line length for HTML
