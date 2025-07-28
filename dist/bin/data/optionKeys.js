@@ -1,49 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.optionsKeys = exports.optionList = void 0;
-exports.optionList = [
-    "--help",
-    "--version",
-    "--config",
-    "--no-css",
-    "--no-js",
-    "--input",
-    "--output",
-    "--no-verbose",
-    "--bundle",
-    "--full-prompt",
-    "--no-mangle-js",
-    "--keep-comments",
-    "--keep-console",
-    "--no-pretty-html",
-    "--no-collapse-whitespace",
-    // Small versions of the options
-    "-h", // --help
-    "-v", // --version
-    "-g", // --config
-    "-c", // --no-css
-    "-j", // --no-js
-    "-i", // --input
-    "-o", // --output
-    "-V", // --no-verbose
-    "-b", // --bundle
-    "-f", // --full-prompt
-    "-m", // --no-mangle-js
-    "-C", // --keep-comments
-    "-l", // --keep-console
-    "-p", // --no-pretty-html
-    "-w" // --no-collapse-whitespace
+exports.mainOptions = exports.CLIOptions = void 0;
+// [full version, short version] pairs of command line options
+exports.CLIOptions = [
+    ["--bundle", "-b"],
+    ["--config", "-g"],
+    ["--full-prompt", "-f"],
+    ["--help", "-h"],
+    ["--input", "-i"],
+    ["--keep-comments", "-C"],
+    ["--keep-console", "-l"],
+    ["--no-collapse-whitespace", "-w"],
+    ["--no-css", "-c"],
+    ["--no-js", "-j"],
+    ["--no-mangle-js", "-m"],
+    ["--no-pretty-html", "-p"],
+    ["--no-verbose", "-V"],
+    ["--output", "-o"],
+    ["--version", "-v"]
 ];
-exports.optionsKeys = [
-    "minifyCSS",
-    "minifyJS",
-    "prompts",
-    "verbose",
+exports.mainOptions = [
     "bundle",
     "mangle",
+    "minifyCSS",
+    "minifyJS",
+    "prettify",
+    "prompts",
     "removeComments",
     "removeConsole",
-    "prettify",
+    "verbose",
+    "welcomeMessage",
     "whitespaces"
 ];
 //# sourceMappingURL=optionKeys.js.map

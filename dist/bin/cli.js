@@ -40,7 +40,7 @@ function parseOptions(args) {
         if (invalidOptions.length === 1) {
             (0, colors_1.error)(`Invalid option: ${invalidOptions[0]}`);
             // Show suggestions only for a single invalid option
-            const suggestion = (0, cliFunctions_1.autocompleteOption)(invalidOptions[0], optionKeys_1.optionList);
+            const suggestion = (0, cliFunctions_1.autocompleteOption)(invalidOptions[0], optionKeys_1.CLIOptions.flat());
             if (suggestion !== invalidOptions[0]) {
                 (0, colors_1.error)(`Perhaps you meant "${suggestion}"? \n`);
             }
@@ -105,6 +105,10 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
                 if (arg === "--config" || arg === "-g") {
                     const configPath = args[index + 1];
                     if (configPath) {
+                        if (!fs_1.default.existsSync(configPath)) {
+                            (0, colors_1.error)(`Config file does not exist: ${configPath}`);
+                            process.exit(1);
+                        }
                         const configContent = fs_1.default.readFileSync(configPath, "utf8");
                         try {
                             options = JSON.parse(configContent);
@@ -129,9 +133,9 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
             });
             // Warn user for for any invalid options
             Object.keys(options).forEach((key) => {
-                if (!optionKeys_1.optionsKeys.includes(key)) {
+                if (!optionKeys_1.mainOptions.includes(key)) {
                     (0, colors_1.warning)(`Invalid option in config file: ${key}`);
-                    const suggestion = (0, cliFunctions_1.autocompleteOption)(key, optionKeys_1.optionsKeys);
+                    const suggestion = (0, cliFunctions_1.autocompleteOption)(key, optionKeys_1.mainOptions);
                     if (suggestion !== key) {
                         (0, colors_1.warning)(`Perhaps you meant "${suggestion}"?`);
                     }

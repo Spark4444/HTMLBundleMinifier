@@ -55,12 +55,12 @@ html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
 | `--help` | `-h` | Show help message |
 | `--version` | `-v` | Show version information |
 | `--config` | `-g` | Specify a config file |
-| `--no-css` | `-c` | Skip CSS minification |
-| `--no-js` | `-j` | Skip JavaScript minification |
 | `--input` | `-i` | Specify input file |
 | `--output` | `-o` | Specify output file |
 | `--verbose` | `-V` | Enable verbose output |
 | `--bundle` | `-b` | Bundle CSS and JS into the HTML |
+| `--no-css` | `-c` | Skip CSS minification |
+| `--no-js` | `-j` | Skip JavaScript minification |
 | `--full-prompt` | `-f` | Enable full prompt mode (prompts for exiting and minifying option configuration) |
 | `--no-mangle-js` | `-m` | Do not mangle JavaScript code |
 | `--keep-comments` | `-C` | Keep comments in the minified HTML |
@@ -103,32 +103,32 @@ html-bundle-minifier -i index.html -o bundle.min.html --verbose
 
 ```json
 {
+    "verbose": boolean,
+    "bundle": boolean,
     "minifyCSS": boolean,
     "minifyJS": boolean,
     "prompts": boolean,
-    "verbose": boolean,
-    "bundle": boolean,
-    "welcomeMessage": boolean,
     "mangle": boolean,
     "removeComments": boolean,
     "removeConsole": boolean,
     "prettify": boolean,
-    "whitespaces": boolean
+    "whitespaces": boolean,
+    "welcomeMessage": boolean
 }
 ```
 <br>
 
+- **verbose**: whether to enable verbose output, default is true
+- **bundle**: whether to bundle CSS and JS files into the HTML, default is false
 - **minifyCSS**: whether to minify CSS files, default is true
 - **minifyJS**: whether to minify JS files, default is true
 - **prompts**: whether to enable interactive prompts, default is true/false
-- **verbose**: whether to enable verbose output, default is true
-- **bundle**: whether to bundle CSS and JS files into the HTML, default is false
-- **welcomeMessage**: whether to show welcome message, default is true/false
 - **mangle**: whether to mangle JS code, default is true
 - **removeComments**: whether to remove comments from the HTML, default is true
 - **removeConsole**: whether to remove console statements from the JS, default is true
 - **prettify**: whether to prettify the HTML after bundling, default is true
 - **whitespaces**: whether to remove unnecessary whitespaces from the HTML, default is true
+- **welcomeMessage**: whether to show welcome message, default is true/false
 <br>
 
 All the fields are optional, if not specified the default values will be used.
@@ -231,9 +231,10 @@ Exiting...
 1. **Parse HTML**: Reads the input HTML file and analyzes its structure
 2. **Detect External Files**: Automatically finds linked CSS files (`<link rel="stylesheet">`) and JavaScript files (`<script src="">`)
 3. **Compile CSS/JS**: Reads extrnal CSS/JS files, compiles them into single style/script tags and inlines them
-4. **(Optional) Minify CSS/JS**: if enabled, both CSS/JS which were compiled before will be minified together with HTML otherwise they will be inlined as is after HTML minification
-4. **Minify HTML**: Removes unnecessary whitespace, comments, and optimizes the HTML as well as inlined CSS/JS
-5. **Output**: Saves the final minified and bundled HTML file into the specified output file
+4. **Process CSS url() Links**: Any CSS `url()` links are modified to be relative to the output HTML file if they aren't and http/s or data links
+5. **(Optional) Minify CSS/JS**: if enabled, both CSS/JS which were compiled before will be minified together with HTML otherwise they will be inlined as is after HTML minification
+6. **Minify HTML**: Removes unnecessary whitespace, comments, and optimizes the HTML as well as inlined CSS/JS
+7. **Output**: Saves the final minified and bundled HTML file into the specified output file
 
 ## File Structure
 
@@ -241,20 +242,44 @@ Exiting...
 html-bundle-minifier/
 ├── src/
 │   ├── index.ts             # Main application logic
-│   ├── regex.ts             # Regular expressions for file detection
-│   ├── interfaces.ts        # TypeScript interfaces for options structures
 │   ├── bin/
-│   │   └── cli.ts           # CLI functionality
+│   │   ├── cli.ts           # CLI functionality
+│   │   ├── data/
+│   │   │   └── optionKeys.ts # CLI option keys definitions
+│   │   └── functions/
+│   │       └── cliFunctions.ts # CLI utility functions
+│   ├── data/
+│   │   ├── interfaces.ts    # TypeScript interfaces for options structures
+│   │   └── regex.ts         # Regular expressions for file detection
 │   └── functions/
 │       ├── colors.ts        # Console colors utils 
 │       ├── mergeFiles.ts    # File merging utils
 │       ├── minifyHTML.ts    # HTML minification logic
-│       └── readLine.ts      # User input handling
+│       ├── readLine.ts      # User input handling
+│       └── replaceCSSJSLinks.ts # CSS/JS link replacement utilities
 ├── test/                    # Test files and examples
-├── package-lock.json        
-├── package.json             
-├── README.md
-└── tsconfig.json            
+│   ├── config.json          # Test configuration file
+│   ├── index.html           # Test HTML file
+│   ├── index.min.html       # Minified test output
+│   ├── missing.html         # Test file for missing resources
+│   ├── missing.min.html     # Minified output for missing resources test
+│   ├── warning.txt          # Test warnings file
+│   ├── css/
+│   │   ├── additional-styles.css # Additional CSS styles for testing
+│   │   └── styles.css       # Main CSS styles for testing
+│   ├── fonts/
+│   │   └── BitcountPropSingle-VariableFont_CRSV,ELSH,ELXP,slnt,wght.ttf # Test font file
+│   └── js/
+│       ├── main.js          # Main JavaScript file for testing
+│       └── utils.js         # Utility JavaScript functions for testing
+├── dist/                    # Compiled TypeScript output (generated)
+├── .gitignore               # Git ignore rules
+├── license.txt              # Project license
+├── package-lock.json        # NPM lock file
+├── package.json             # NPM package configuration
+├── README.md                # Project documentation
+├── TODO.md                  # Project todo list
+└── tsconfig.json            # TypeScript configuration
 ```
 
 ## Requirements

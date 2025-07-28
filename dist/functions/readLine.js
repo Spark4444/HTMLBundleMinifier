@@ -12,20 +12,19 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const colors_1 = require("./colors");
 const regex_1 = require("../data/regex");
-const rs = readline_1.default.createInterface({
+exports.rs = readline_1.default.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
-exports.rs = rs;
 // Function to ask questions in the console via readline
 function askQuestion(query) {
     (0, colors_1.log)("\n");
     return new Promise(resolve => {
-        rs.question(query, (answer) => {
+        exports.rs.question(query, (answer) => {
             let trimmedAnswer = answer.trim().toLowerCase();
             if (trimmedAnswer.toLowerCase() === "exit") {
                 (0, colors_1.log)("Exiting...");
-                rs.close();
+                exports.rs.close();
                 process.exit(0);
             }
             resolve(trimmedAnswer);
@@ -33,17 +32,17 @@ function askQuestion(query) {
     });
 }
 // Function to prompt for minification options
-async function promptForMinificationOption(varaible, fileType, verbose) {
+async function promptForMinificationOption(variable, fileType, verbose) {
     let prompt = await askQuestion(`Do you want to minify ${fileType} files? (y/n, default is y): `);
     if (prompt === "n" || prompt === "no") {
         verbose && (0, colors_1.success)(`Skipping ${fileType} minification.`);
-        varaible = false;
+        variable = false;
     }
     else {
         verbose && (0, colors_1.success)(`${fileType} will be minified.`);
-        varaible = true;
+        variable = true;
     }
-    return varaible;
+    return variable;
 }
 // Function to find CSS and JS files in the HTML content
 async function findFiles(content, type, inputFile, verbose) {

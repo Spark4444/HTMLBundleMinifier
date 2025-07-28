@@ -1,3 +1,3 @@
-export declare const optionList: string[];
-export declare const optionsKeys: string[];
+export declare const CLIOptions: [string, string][];
+export declare const mainOptions: string[];
 //# sourceMappingURL=optionKeys.d.ts.map

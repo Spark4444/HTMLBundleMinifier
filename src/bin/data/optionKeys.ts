@@ -1,46 +1,32 @@
-export const optionList: string[] = [
-    "--help", 
-    "--version",
-    "--config",
-    "--no-css",
-    "--no-js",
-    "--input",
-    "--output",
-    "--no-verbose",
-    "--bundle",
-    "--full-prompt",
-    "--no-mangle-js",
-    "--keep-comments",
-    "--keep-console",
-    "--no-pretty-html",
-    "--no-collapse-whitespace",
-    // Small versions of the options
-    "-h", // --help
-    "-v", // --version
-    "-g", // --config
-    "-c", // --no-css
-    "-j", // --no-js
-    "-i", // --input
-    "-o", // --output
-    "-V", // --no-verbose
-    "-b", // --bundle
-    "-f", // --full-prompt
-    "-m", // --no-mangle-js
-    "-C", // --keep-comments
-    "-l", // --keep-console
-    "-p", // --no-pretty-html
-    "-w"  // --no-collapse-whitespace
+// [full version, short version] pairs of command line options
+export const CLIOptions: [string, string][] = [
+    ["--help", "-h"],
+    ["--version", "-v"],
+    ["--config", "-g"],
+    ["--input", "-i"],
+    ["--output", "-o"],
+    ["--no-verbose", "-V"],
+    ["--bundle", "-b"],
+    ["--no-css", "-c"],
+    ["--no-js", "-j"],
+    ["--full-prompt", "-f"],
+    ["--no-mangle-js", "-m"],
+    ["--keep-comments", "-C"],
+    ["--keep-console", "-l"],
+    ["--no-pretty-html", "-p"],
+    ["--no-collapse-whitespace", "-w"]
 ];
 
-export const optionsKeys = [
+export const mainOptions = [
+    "verbose",
+    "bundle",
     "minifyCSS",
     "minifyJS",
     "prompts",
-    "verbose",
-    "bundle",
     "mangle",
     "removeComments",
     "removeConsole",
     "prettify",
-    "whitespaces"
+    "whitespaces",
+    "welcomeMessage"
 ];

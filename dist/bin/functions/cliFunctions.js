@@ -11,7 +11,7 @@ function autocompleteOption(option, array) {
 }
 // Function to check if an argument is an option
 function isAnOption(arg) {
-    return optionKeys_1.optionList.includes(arg);
+    return optionKeys_1.CLIOptions.flat().includes(arg);
 }
 // Check if the input file is provided
 function checkForInputFile(args, index, type) {

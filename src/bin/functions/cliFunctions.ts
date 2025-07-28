@@ -1,5 +1,5 @@
 import { error } from "../../functions/colors";
-import { optionList } from "../data/optionKeys";
+import { CLIOptions } from "../data/optionKeys";
 
 // Function to autocomplete an option
 export function autocompleteOption(option: string, array: string[]): string {
@@ -8,7 +8,7 @@ export function autocompleteOption(option: string, array: string[]): string {
 
 // Function to check if an argument is an option
 export function isAnOption(arg: string): boolean {
-    return optionList.includes(arg);
+    return CLIOptions.flat().includes(arg);
 }
 
 // Check if the input file is provided

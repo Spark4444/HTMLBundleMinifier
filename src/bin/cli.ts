@@ -14,7 +14,7 @@ import { log, error, warning, success } from "../functions/colors";
 
 import { Options } from "../data/interfaces";
 
-import { optionList, optionsKeys } from "./data/optionKeys";
+import { CLIOptions, mainOptions } from "./data/optionKeys";
 import { autocompleteOption, isAnOption, checkForInputFile } from "./functions/cliFunctions";
 
 // Options example: html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
@@ -47,7 +47,7 @@ function parseOptions(args: string[]): void {
             error(`Invalid option: ${invalidOptions[0]}`);
 
             // Show suggestions only for a single invalid option
-            const suggestion = autocompleteOption(invalidOptions[0], optionList);
+            const suggestion = autocompleteOption(invalidOptions[0], CLIOptions.flat());
             if (suggestion !== invalidOptions[0]) {
                 error(`Perhaps you meant "${suggestion}"? \n`);
             }
@@ -80,12 +80,12 @@ Options:
 --help, -h                      Show this help message
 --version, -v                   Show the version of the HTML Bundle Minifier
 --config, -g                    Specify a config file
---no-css, -c                    Do not minify CSS files (default: true)
---no-js, -j                     Do not minify JS files (default: true)
 --input, -i                     Specify the input HTML file (default: prompt)
 --output, -o                    Specify the output HTML file (default: <inputFile>.min.html)
 --no-verbose, -V                Disable verbose mode (default: true)
 --bundle, -b                    Bundle without minification (default: false)
+--no-css, -c                    Do not minify CSS files (default: true)
+--no-js, -j                     Do not minify JS files (default: true)
 --full-prompt, -f               Enable full prompt mode (default: false)
 --no-mangle-js, -m              Do not mangle JS variable names (default: false)
 --keep-comments, -C             Keep comments in the minified HTML (default: false)
@@ -114,6 +114,10 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
                 if (arg === "--config" || arg === "-g") {
                     const configPath = args[index + 1];
                     if (configPath) {
+                        if (!fs.existsSync(configPath)) {
+                            error(`Config file does not exist: ${configPath}`);
+                            process.exit(1);
+                        }
                         const configContent = fs.readFileSync(configPath, "utf8");
                         try {
                             options = JSON.parse(configContent);
@@ -140,9 +144,9 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
 
             // Warn user for for any invalid options
             Object.keys(options).forEach((key) => {
-                if (!optionsKeys.includes(key)) {
+                if (!mainOptions.includes(key)) {
                     warning(`Invalid option in config file: ${key}`);
-                    const suggestion = autocompleteOption(key, optionsKeys);
+                    const suggestion = autocompleteOption(key, mainOptions);
                     if (suggestion !== key) {
                         warning(`Perhaps you meant "${suggestion}"?`);
                     }

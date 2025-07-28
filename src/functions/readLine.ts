@@ -5,13 +5,13 @@ import { log, warning, success } from "./colors";
 import { linkRegex, scriptRegex,  styleRegex, inlineScriptRegex } from "../data/regex";
 import { FileItem } from "../data/interfaces";
 
-const rs = readline.createInterface({
+export const rs = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
 
 // Function to ask questions in the console via readline
-function askQuestion(query: string): Promise<string> {
+export function askQuestion(query: string): Promise<string> {
     log("\n");
     return new Promise(resolve => {
         rs.question(query, (answer: string) => {
@@ -27,21 +27,21 @@ function askQuestion(query: string): Promise<string> {
 }
 
 // Function to prompt for minification options
-async function promptForMinificationOption(varaible: boolean, fileType: string, verbose: boolean): Promise<boolean> {
+export async function promptForMinificationOption(variable: boolean, fileType: string, verbose: boolean): Promise<boolean> {
     let prompt: string = await askQuestion(`Do you want to minify ${fileType} files? (y/n, default is y): `);
     if (prompt === "n" || prompt === "no") {
         verbose && success(`Skipping ${fileType} minification.`);
-        varaible = false;
+        variable = false;
     }
     else {
         verbose && success(`${fileType} will be minified.`);
-        varaible = true;
+        variable = true;
     }
-    return varaible;
+    return variable;
 }
 
 // Function to find CSS and JS files in the HTML content
-async function findFiles(content: string, type: string, inputFile: string, verbose: boolean): Promise<FileItem[]> {
+export async function findFiles(content: string, type: string, inputFile: string, verbose: boolean): Promise<FileItem[]> {
         let match;
         let result: FileItem[] = [];
         let srcRegex = type === "CSS" ? linkRegex : scriptRegex;
@@ -82,5 +82,3 @@ async function findFiles(content: string, type: string, inputFile: string, verbo
 
         return result;
 }
-
-export { rs, askQuestion, promptForMinificationOption, findFiles };
