@@ -72,12 +72,12 @@ Options:
 --help, -h                      Show this help message
 --version, -v                   Show the version of the HTML Bundle Minifier
 --config, -g                    Specify a config file
---no-css, -c                    Do not minify CSS files (default: true)
---no-js, -j                     Do not minify JS files (default: true)
 --input, -i                     Specify the input HTML file (default: prompt)
 --output, -o                    Specify the output HTML file (default: <inputFile>.min.html)
 --no-verbose, -V                Disable verbose mode (default: true)
 --bundle, -b                    Bundle without minification (default: false)
+--no-css, -c                    Do not minify CSS files (default: true)
+--no-js, -j                     Do not minify JS files (default: true)
 --full-prompt, -f               Enable full prompt mode (default: false)
 --no-mangle-js, -m              Do not mangle JS variable names (default: false)
 --keep-comments, -C             Keep comments in the minified HTML (default: false)

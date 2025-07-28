@@ -3,33 +3,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.mainOptions = exports.CLIOptions = void 0;
 // [full version, short version] pairs of command line options
 exports.CLIOptions = [
-    ["--bundle", "-b"],
-    ["--config", "-g"],
-    ["--full-prompt", "-f"],
     ["--help", "-h"],
+    ["--version", "-v"],
+    ["--config", "-g"],
     ["--input", "-i"],
-    ["--keep-comments", "-C"],
-    ["--keep-console", "-l"],
-    ["--no-collapse-whitespace", "-w"],
+    ["--output", "-o"],
+    ["--no-verbose", "-V"],
+    ["--bundle", "-b"],
     ["--no-css", "-c"],
     ["--no-js", "-j"],
+    ["--full-prompt", "-f"],
     ["--no-mangle-js", "-m"],
+    ["--keep-comments", "-C"],
+    ["--keep-console", "-l"],
     ["--no-pretty-html", "-p"],
-    ["--no-verbose", "-V"],
-    ["--output", "-o"],
-    ["--version", "-v"]
+    ["--no-collapse-whitespace", "-w"]
 ];
 exports.mainOptions = [
+    "verbose",
     "bundle",
-    "mangle",
     "minifyCSS",
     "minifyJS",
-    "prettify",
     "prompts",
+    "mangle",
     "removeComments",
     "removeConsole",
-    "verbose",
-    "welcomeMessage",
-    "whitespaces"
+    "prettify",
+    "whitespaces",
+    "welcomeMessage"
 ];
 //# sourceMappingURL=optionKeys.js.map

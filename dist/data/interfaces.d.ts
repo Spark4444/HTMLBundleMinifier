@@ -1,28 +1,28 @@
 export interface Options {
+    verbose?: boolean;
+    bundle?: boolean;
     minifyCSS?: boolean;
     minifyJS?: boolean;
     prompts?: boolean;
-    verbose?: boolean;
-    bundle?: boolean;
-    welcomeMessage?: boolean;
     mangle?: boolean;
     removeComments?: boolean;
     removeConsole?: boolean;
     prettify?: boolean;
     whitespaces?: boolean;
+    welcomeMessage?: boolean;
 }
 export interface MinifierOptions {
+    verbose?: boolean;
     minifyCSS?: boolean;
     minifyJS?: boolean;
-    verbose?: boolean;
     mangle?: boolean;
     removeComments?: boolean;
     removeConsole?: boolean;
     whitespaces?: boolean;
 }
 export interface BundlerOptions {
-    prettify?: boolean;
     verbose?: boolean;
+    prettify?: boolean;
 }
 export interface FileItem {
     type: "inline" | "path";
