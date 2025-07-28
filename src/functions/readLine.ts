@@ -3,11 +3,7 @@ import fs from "fs";
 import path from "path";
 import { log, warning, success } from "./colors";
 import { linkRegex, scriptRegex,  styleRegex, inlineScriptRegex } from "../regex";
-
-interface FileItem {
-    type: "inline" | "path";
-    content: string;
-}
+import { FileItem } from "../interfaces";
 
 const rs = readline.createInterface({
     input: process.stdin,
@@ -45,7 +41,7 @@ async function promptForMinificationOption(varaible: boolean, fileType: string, 
 }
 
 // Function to find CSS and JS files in the HTML content
-async function findFiles(content: string, type: string, inputFile: string, verbose: boolean, prompts: boolean): Promise<FileItem[]> {
+async function findFiles(content: string, type: string, inputFile: string, verbose: boolean): Promise<FileItem[]> {
         let match;
         let result: FileItem[] = [];
         let srcRegex = type === "CSS" ? linkRegex : scriptRegex;
@@ -66,24 +62,9 @@ async function findFiles(content: string, type: string, inputFile: string, verbo
                     content: filePath
                 });
             } 
-            else if (prompts) {
-                !verbose && prompts && log("\n");
-                warning(`${type} File not found: ${filePath}`);
-                let question = await askQuestion(`Do you want to continue without this ${type} file? (y/n, default is n): `);
-                if (question !== "yes" && question !== "y") {
-                    log("Exiting...");
-                    rs.close();
-                    process.exit(0);
-                }
-                else {
-                    verbose && success(`Continuing without ${type} file: ${filePath}`);
-                }
-            }
-            else if (!prompts) {
-                log("\n");
-                // Show a different warning if no prompts are enabled without asking the user to continue
-                warning(`File ${filePath} does not exist, continuing without it. \n If you want to configure this behavior use the -f or --full-prompt flags when running the CLI.`);
-                log("\n");
+            else {
+                // If the file does not exist, warn the user and continue
+                warning(`\nWarning: File ${filePath} does not exist, continuing without it.\n`);
             }
         }
 

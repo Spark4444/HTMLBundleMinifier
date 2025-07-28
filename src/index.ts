@@ -110,13 +110,13 @@ async function main(inputFile?: string, outputFile?: string, options: Options = 
     verbose && log("\n");
 
     // Compile CSS and JS files into a single string
-    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, verbose, prompts);
-    compiledCSS = mergeFiles(cssFiles);
+    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, verbose);
+    compiledCSS = mergeFiles(cssFiles, "CSS", inputFile);
 
     verbose && log("\n");
 
-    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, verbose, prompts);
-    compiledJS = mergeFiles(jsFiles);
+    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, verbose);
+    compiledJS = mergeFiles(jsFiles, "JS", inputFile);
 
     if ((compiledCSS || compiledJS) && verbose) {
         log("\n");
@@ -174,7 +174,7 @@ async function main(inputFile?: string, outputFile?: string, options: Options = 
     }
     else {
         // If no prompts are required, exit after the first run
-        log("Exiting...");
+        log("\nExiting...");
         rs.close();
         process.exit(0);
     }

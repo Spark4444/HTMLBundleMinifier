@@ -76,11 +76,11 @@ async function main(inputFile, outputFile, options = {}) {
     let compiledJS = "";
     verbose && (0, colors_1.log)("\n");
     // Compile CSS and JS files into a single string
-    cssFiles = await (0, readLine_1.findFiles)(htmlContent, "CSS", stringInputFile, verbose, prompts);
-    compiledCSS = (0, mergeFiles_1.default)(cssFiles);
+    cssFiles = await (0, readLine_1.findFiles)(htmlContent, "CSS", stringInputFile, verbose);
+    compiledCSS = (0, mergeFiles_1.default)(cssFiles, "CSS", inputFile);
     verbose && (0, colors_1.log)("\n");
-    jsFiles = await (0, readLine_1.findFiles)(htmlContent, "JS", stringInputFile, verbose, prompts);
-    compiledJS = (0, mergeFiles_1.default)(jsFiles);
+    jsFiles = await (0, readLine_1.findFiles)(htmlContent, "JS", stringInputFile, verbose);
+    compiledJS = (0, mergeFiles_1.default)(jsFiles, "JS", inputFile);
     if ((compiledCSS || compiledJS) && verbose) {
         (0, colors_1.log)("\n");
     }
@@ -134,7 +134,7 @@ async function main(inputFile, outputFile, options = {}) {
     }
     else {
         // If no prompts are required, exit after the first run
-        (0, colors_1.log)("Exiting...");
+        (0, colors_1.log)("\nExiting...");
         readLine_1.rs.close();
         process.exit(0);
     }

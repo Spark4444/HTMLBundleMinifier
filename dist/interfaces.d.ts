@@ -24,4 +24,8 @@ export interface BundlerOptions {
     prettify?: boolean;
     verbose?: boolean;
 }
+export interface FileItem {
+    type: "inline" | "path";
+    content: string;
+}
 //# sourceMappingURL=interfaces.d.ts.map
