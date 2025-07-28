@@ -1,1 +1,1 @@
-{"version":3,"file":"mergeFiles.d.ts","sourceRoot":"","sources":["../../src/functions/mergeFiles.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,QAAQ,EAAE,MAAM,oBAAoB,CAAC;AAuE9C,iBAAS,UAAU,CAAC,QAAQ,EAAE,QAAQ,EAAE,EAAE,IAAI,EAAE,MAAM,EAAE,QAAQ,EAAE,MAAM,GAAG,MAAM,CAyBhF;AAED,eAAe,UAAU,CAAC"}
+{"version":3,"file":"mergeFiles.d.ts","sourceRoot":"","sources":["../../src/functions/mergeFiles.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,QAAQ,EAAE,MAAM,oBAAoB,CAAC;AAsD9C,iBAAS,UAAU,CAAC,QAAQ,EAAE,QAAQ,EAAE,EAAE,IAAI,EAAE,MAAM,EAAE,QAAQ,EAAE,MAAM,GAAG,MAAM,CAyBhF;AAED,eAAe,UAAU,CAAC"}
