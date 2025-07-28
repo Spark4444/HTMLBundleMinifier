@@ -5,6 +5,15 @@
     box-sizing: border-box;
 }
 
+/* Custom Font Declaration */
+@font-face {
+    font-family: 'BitcountPropSingle';
+    src: url('../fonts/BitcountPropSingle-VariableFont_CRSV,ELSH,ELXP,slnt,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
