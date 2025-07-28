@@ -21,6 +21,11 @@ function parseOptions(args) {
         "--no-verbose",
         "--bundle",
         "--full-prompt",
+        "--no-mangle-js",
+        "--keep-comments",
+        "--keep-console",
+        "--no-pretty-html",
+        "--no-collapse-whitespace",
         // Small versions of the options
         "-h", // --help
         "-v", // --version
@@ -30,7 +35,12 @@ function parseOptions(args) {
         "-o", // --output
         "-V", // --no-verbose
         "-b", // --bundle
-        "-f" // --full-prompt
+        "-f", // --full-prompt
+        "-m", // --no-mangle-js
+        "-C", // --keep-comments
+        "-l", // --keep-console
+        "-p", // --no-pretty-html
+        "-w" // --no-collapse-whitespace
     ];
     // Function to check if an argument is an option
     function isAnOption(arg) {
@@ -92,6 +102,11 @@ Options:
 --no-verbose, -V    Disable verbose mode (default: true)
 --bundle, -b        Bundle without minification (default: false)
 --full-prompt, -f   Enable full prompt mode (default: false)
+--no-mangle-js, -m  Do not mangle JS variable names (default: false)
+--keep-comments, -C Keep comments in the minified HTML (default: false)
+--keep-console, -l  Keep console statements in the minified JS (default: false)
+--no-pretty-html, -p Skip HTML prettification (default: false)
+--no-collapse-whitespace, -w Skip whitespace removal (default: false)
 
 Examples:
 html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
@@ -106,13 +121,19 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
         }
         else {
             // Default values for input and output files
+            // Try keeping the option varaibles clean and simple without using "noOption"
             let inputFile = undefined;
             let outputFile = undefined;
             let minifyCSS = true;
             let minifyJS = true;
             let verbose = true;
             let bundle = false;
-            let noPrompts = true;
+            let prompts = false;
+            let mangle = true;
+            let removeComments = true;
+            let removeConsole = true;
+            let prettify = true;
+            let whitespaces = true;
             // Parse the arguments and enable/disable their respective options
             args.forEach((arg, index) => {
                 if (arg === "--no-css" || arg === "-c") {
@@ -150,8 +171,28 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
                     verbose && (0, colors_1.success)("Bundling mode is enabled. \n");
                 }
                 else if (arg === "--full-prompt" || arg === "-f") {
-                    noPrompts = false;
+                    prompts = true;
                     verbose && (0, colors_1.success)("Full prompt mode is enabled. \n");
+                }
+                else if (arg === "--no-mangle-js" || arg === "-m") {
+                    mangle = false;
+                    verbose && (0, colors_1.success)("JS mangling is disabled. \n");
+                }
+                else if (arg === "--keep-comments" || arg === "-C") {
+                    removeComments = false;
+                    verbose && (0, colors_1.success)("Keeping comments in the minified HTML. \n");
+                }
+                else if (arg === "--keep-console" || arg === "-l") {
+                    removeConsole = false;
+                    verbose && (0, colors_1.success)("Keeping console statements in the minified JS. \n");
+                }
+                else if (arg === "--no-pretty-html" || arg === "-p") {
+                    prettify = false;
+                    verbose && (0, colors_1.success)("Skipping HTML prettification. \n");
+                }
+                else if (arg === "--no-collapse-whitespace" || arg === "-w") {
+                    whitespaces = false;
+                    verbose && (0, colors_1.success)("Skipping whitespace removal. \n");
                 }
             });
             // If input file is not provided warn the user
@@ -166,8 +207,20 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
             if (!outputFile) {
                 (0, colors_1.warning)("Output file wasn't specified, you will be prompted for it.\n if you want to specify it, use the --output or -o option.");
             }
+            const options = {
+                minifyCSS,
+                minifyJS,
+                prompts,
+                verbose,
+                bundle,
+                mangle,
+                removeComments,
+                removeConsole,
+                prettify,
+                whitespaces
+            };
             // Call the main function with the parsed options
-            main(inputFile, outputFile, minifyCSS, minifyJS, noPrompts, verbose, bundle).catch((err) => {
+            main(inputFile, outputFile, options).catch((err) => {
                 (0, colors_1.error)("An error occurred:", err);
                 process.exit(1);
             });

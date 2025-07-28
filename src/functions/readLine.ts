@@ -45,7 +45,7 @@ async function promptForMinificationOption(varaible: boolean, fileType: string, 
 }
 
 // Function to find CSS and JS files in the HTML content
-async function findFiles(content: string, type: string, inputFile: string, verbose: boolean, noPrompts: boolean): Promise<FileItem[]> {
+async function findFiles(content: string, type: string, inputFile: string, verbose: boolean, prompts: boolean): Promise<FileItem[]> {
         let match;
         let result: FileItem[] = [];
         let srcRegex = type === "CSS" ? linkRegex : scriptRegex;
@@ -66,8 +66,8 @@ async function findFiles(content: string, type: string, inputFile: string, verbo
                     content: filePath
                 });
             } 
-            else if (!noPrompts) {
-                !verbose && !noPrompts && log("\n");
+            else if (prompts) {
+                !verbose && prompts && log("\n");
                 warning(`${type} File not found: ${filePath}`);
                 let question = await askQuestion(`Do you want to continue without this ${type} file? (y/n, default is n): `);
                 if (question !== "yes" && question !== "y") {
@@ -79,11 +79,11 @@ async function findFiles(content: string, type: string, inputFile: string, verbo
                     verbose && success(`Continuing without ${type} file: ${filePath}`);
                 }
             }
-            else if (noPrompts) {
-                !verbose && log("\n");
+            else if (!prompts) {
+                log("\n");
                 // Show a different warning if no prompts are enabled without asking the user to continue
                 warning(`File ${filePath} does not exist, continuing without it. \n If you want to configure this behavior use the -f or --full-prompt flags when running the CLI.`);
-                !verbose && log("\n");
+                log("\n");
             }
         }
 

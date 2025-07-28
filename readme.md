@@ -56,9 +56,14 @@ html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
 | `--no-js` | `-j` | Skip JavaScript minification |
 | `--input` | `-i` | Specify input file |
 | `--output` | `-o` | Specify output file |
-| `--verbose` | `-v` | Enable verbose output |
-| `--bundle` | `-b` | Bundle CSS and JS into the HTML 
+| `--verbose` | `-V` | Enable verbose output |
+| `--bundle` | `-b` | Bundle CSS and JS into the HTML |
 | `--full-prompt` | `-f` | Enable full prompt mode (prompts for exiting and minifying option configuration) |
+| `--no-mangle-js` | `-m` | Do not mangle JavaScript code |
+| `--keep-comments` | `-C` | Keep comments in the minified HTML |
+| `--keep-console` | `-l` | Keep console statements in the minified JavaScript |
+| `--no-pretty-html` | `-p` | Skip HTML prettification |
+| `--no-collapse-whitespace` | `-w` | Skip whitespace removal |
 
 #### CLI Examples
 
@@ -100,16 +105,12 @@ const main = require('html-bundle-minifier');
 await main('input.html', 'output.min.html');
 
 // With options
-await main('input.html', 'output.min.html', true, true);
-// Arguments:
-// 1. inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
-// 2. outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
-// 3. minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
-// 4. minifyJS: Boolean indicating whether to minify JS files. Default is true.
-// 5. noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
-// 6. verbose: Boolean indicating whether to log detailed information during the process. Default is true.
-// 7. bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
-// 8. welcomeMessage: Boolean indicating whether to display a welcome message. Default is true. used for second run.
+await main('input.html', 'output.min.html', {
+    minifyCSS: true,
+    minifyJS: true
+});
+
+// All options need to be specified in an object after the input and output file paths
 
 ```
 
@@ -204,8 +205,9 @@ html-bundle-minifier/
 ├── src/
 │   ├── index.ts             # Main application logic
 │   ├── regex.ts             # Regular expressions for file detection
+│   ├── interfaces.ts        # TypeScript interfaces for options structures
 │   ├── bin/
-│   │   └── cli.ts           # CLI
+│   │   └── cli.ts           # CLI functionality
 │   └── functions/
 │       ├── colors.ts        # Console colors utils 
 │       ├── mergeFiles.ts    # File merging utils

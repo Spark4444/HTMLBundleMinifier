@@ -43,9 +43,10 @@ const colors_1 = require("./colors");
 const prettier = __importStar(require("prettier"));
 const replaceCSSJSLinks_1 = __importDefault(require("./replaceCSSJSLinks"));
 // Minify HTML files using html-minifier-terser
-async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minifyCSS = true, minifyJS = true, verbose) {
+async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, options) {
     const fs = require("fs");
     const minify = require("html-minifier-terser").minify;
+    const { minifyCSS, minifyJS, verbose, mangle, removeComments, removeConsole, whitespaces } = options;
     // Minify each related CSS and JS content and store them inside the HTML and save it to the output file
     try {
         // Remove all existing CSS and JS tags (both linked and inline)
@@ -56,14 +57,14 @@ async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minify
             htmlContent = (0, replaceCSSJSLinks_1.default)(htmlContent, jsContent, "js");
         }
         let minifiedHtml = await minify(htmlContent, {
-            collapseWhitespace: true, // Remove unnecessary whitespace
-            removeComments: true, // Remove comments
+            collapseWhitespace: whitespaces, // Remove unnecessary whitespace
+            removeComments: removeComments, // Remove comments
             minifyCSS: true, // Minify CSS
             minifyJS: {
-                mangle: true, // Mangle JS variable names e.g. `let myVariable = 1;` to `let a = 1;` and etc in alphabetical order
+                mangle: mangle, // Mangle JS variable names e.g. `let myVariable = 1;` to `let a = 1;` and etc in alphabetical order
                 compress: {
-                    drop_console: false, // Do not drop console statements
-                    drop_debugger: true, // Drop debugger statements
+                    drop_console: removeConsole, // Remove console statements
+                    drop_debugger: true, // Remove debugger statements
                     pure_funcs: [] // List of functions to be removed from the code
                 }
             },
@@ -86,23 +87,28 @@ async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, minify
 }
 // Bundle HTML by replacing CSS and JS links with their content
 // This function is used when the user specifies the --bundle option
-async function bundleHTML(inputFile, outputFile, cssContent, jsContent, verbose) {
+async function bundleHTML(inputFile, outputFile, cssContent, jsContent, options) {
     const fs = require("fs");
+    const { prettify, verbose } = options;
     try {
         // Read the HTML file content
         let htmlContent = fs.readFileSync(inputFile, "utf8");
         htmlContent = (0, replaceCSSJSLinks_1.default)(htmlContent, cssContent, "css");
         htmlContent = (0, replaceCSSJSLinks_1.default)(htmlContent, jsContent, "js");
-        const prettifiedHtml = await prettier.format(htmlContent, {
-            parser: "html",
-            printWidth: 120, // Longer line length for HTML
-            tabWidth: 4, // 4 spaces per tab level
-            useTabs: false, // Use spaces instead of tabs (more standard)
-            htmlWhitespaceSensitivity: "ignore", // Better formatting for HTML
-            bracketSameLine: false, // Put > on new line for multi-line tags
-            singleQuote: false, // Use double quotes for HTML attributes
-            endOfLine: "lf" // Consistent line endings
-        });
+        let prettifiedHtml = htmlContent;
+        // If the user specified to prettify the HTML, use prettier to format it
+        if (prettify) {
+            prettifiedHtml = await prettier.format(htmlContent, {
+                parser: "html",
+                printWidth: 120, // Longer line length for HTML
+                tabWidth: 4, // 4 spaces per tab level
+                useTabs: false, // Use spaces instead of tabs (more standard)
+                htmlWhitespaceSensitivity: "ignore", // Better formatting for HTML
+                bracketSameLine: false, // Put > on new line for multi-line tags
+                singleQuote: false, // Use double quotes for HTML attributes
+                endOfLine: "lf" // Consistent line endings
+            });
+        }
         // Write the bundled HTML to the output file
         fs.writeFileSync(outputFile, prettifiedHtml, "utf8");
         verbose && (0, colors_1.success)(`Bundled HTML saved to ${outputFile}`);

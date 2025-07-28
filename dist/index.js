@@ -14,16 +14,12 @@ const colors_1 = require("./functions/colors");
 // Options explanation:
 // 1. inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
 // 2. outputFile: Path to save the minified HTML file. If not provided, the user will be prompted to enter it or a default name will be used.
-// 3. minifyCSS: Boolean indicating whether to minify CSS files. Default is true.
-// 4. minifyJS: Boolean indicating whether to minify JS files. Default is true.
-// 5. noPrompts: Boolean indicating whether to skip welcome messages and minification prompts. Default is false. used for CLI.
-// 6. verbose: Boolean indicating whether to log detailed information during the process. Default is true.
-// 7. bundle: Boolean indicating whether to just bundle the CSS and JS files without minification. Default is false.
-// 8. welcomeMessage: Boolean indicating whether to display a welcome message. Default is true. used for second run.
+// 3. Options as object
 // Main function to handle the minification process
-async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, noPrompts = false, verbose = true, bundle = false, welcomeMessage = true) {
+async function main(inputFile, outputFile, options = {}) {
+    let { minifyCSS = true, minifyJS = true, prompts = true, verbose = true, bundle = false, welcomeMessage = true, mangle = true, removeComments = true, removeConsole = true, prettify = true, whitespaces = true } = options;
     // Disable welcome message if no prompts are required and second run
-    if (noPrompts) {
+    if (!prompts) {
         welcomeMessage = false;
     }
     // Display welcome message only once on the first run
@@ -67,7 +63,7 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
         (0, colors_1.success)(`Output file is valid: ${stringOutputFile}`);
     }
     // Prompt for minification options if not running with CLI args
-    if (!noPrompts) {
+    if (prompts) {
         minifyCSS = await (0, readLine_1.promptForMinificationOption)(minifyCSS, "CSS", verbose);
         minifyJS = await (0, readLine_1.promptForMinificationOption)(minifyJS, "JS", verbose);
     }
@@ -80,10 +76,10 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
     let compiledJS = "";
     verbose && (0, colors_1.log)("\n");
     // Compile CSS and JS files into a single string
-    cssFiles = await (0, readLine_1.findFiles)(htmlContent, "CSS", stringInputFile, verbose, noPrompts);
+    cssFiles = await (0, readLine_1.findFiles)(htmlContent, "CSS", stringInputFile, verbose, prompts);
     compiledCSS = (0, mergeFiles_1.default)(cssFiles);
     verbose && (0, colors_1.log)("\n");
-    jsFiles = await (0, readLine_1.findFiles)(htmlContent, "JS", stringInputFile, verbose, noPrompts);
+    jsFiles = await (0, readLine_1.findFiles)(htmlContent, "JS", stringInputFile, verbose, prompts);
     compiledJS = (0, mergeFiles_1.default)(jsFiles);
     if ((compiledCSS || compiledJS) && verbose) {
         (0, colors_1.log)("\n");
@@ -91,17 +87,30 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
     // Minify HTML
     if (bundle) {
         // If the user specified the --bundle option, bundle the CSS and JS files without minification
-        await (0, minifyHTML_1.bundleHTML)(stringInputFile, stringOutputFile, compiledCSS, compiledJS, verbose);
+        const bundlerOptions = {
+            prettify,
+            verbose
+        };
+        await (0, minifyHTML_1.bundleHTML)(stringInputFile, stringOutputFile, compiledCSS, compiledJS, bundlerOptions);
     }
     else {
         // Otherwise, minify the HTML file with the provided options
-        await (0, minifyHTML_1.minifyHTML)(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifyCSS, minifyJS, verbose);
+        const minifierOptions = {
+            minifyCSS,
+            minifyJS,
+            verbose,
+            mangle,
+            removeComments,
+            removeConsole,
+            whitespaces
+        };
+        await (0, minifyHTML_1.minifyHTML)(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifierOptions);
     }
     verbose && (0, colors_1.success)("Minification process completed.");
     welcomeMessage = false; // Disable welcome message after the first run
     // If no prompts is set don't ask the user if they want to exit
-    if (noPrompts === false) {
-        // Close the readline interface if user wants to exit 
+    if (prompts) {
+        // Close the readline interface if user wants to exit
         let exitQuestion = await (0, readLine_1.askQuestion)("Do you want to exit? (y/n, default is y): ");
         // Exit if the user doesn't exactly type "no" instead of doing it vica versa
         if (exitQuestion !== "n" && exitQuestion !== "no") {
@@ -113,7 +122,14 @@ async function main(inputFile, outputFile, minifyCSS = true, minifyJS = true, no
             // Run the main function again with the same options to allow for another run
             // But this time without the welcome message
             // And also with prompts enabled to prompt for new minification options
-            main(undefined, undefined, true, true, false, verbose, false, false);
+            main(inputFile, outputFile, {
+                minifyCSS,
+                minifyJS,
+                prompts: true,
+                verbose,
+                bundle,
+                welcomeMessage: false
+            });
         }
     }
     else {
