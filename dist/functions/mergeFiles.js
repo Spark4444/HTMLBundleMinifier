@@ -8,13 +8,18 @@ const colors_1 = require("./colors");
 const path_1 = __importDefault(require("path"));
 // Find all the url() in the CSS file and replace them with relative paths to the HTML file
 function replaceRelativeCSSPaths(htmlPath, cssPath, cssContent) {
-    // Regular expression to match url() declarations in CSS
-    const urlRegex = /url\((['"]?)([^'"*)]+)\1\)/g;
-    return cssContent.replace(urlRegex, (match, quote, urlPath) => {
+    // Regular expressions to match url() declarations in CSS
+    const urlRegexWithQuotes = /url\((['"])(.*?)\1\);?/g;
+    const urlRegexWithoutQuotes = /url\(([^'"][^)]*)\);?/g;
+    // First replace quoted URLs
+    let result = cssContent.replace(urlRegexWithQuotes, (match, quote, urlPath) => {
         // Skip absolute URLs (http/https) and data URLs
         if (urlPath.startsWith("http") || urlPath.startsWith("data:")) {
             return match;
         }
+        console.log(match);
+        // Check if the original match had a semicolon
+        const hasSemicolon = match.endsWith(';');
         // Add the cssPath to the urlPath to resolve the full path
         const matchPath = path_1.default.join(path_1.default.dirname(cssPath), urlPath);
         // Then calculate the relative path from the HTML to the file location
@@ -25,7 +30,30 @@ function replaceRelativeCSSPaths(htmlPath, cssPath, cssContent) {
             (0, colors_1.warning)(`\nWarning: Referenced file does not exist: ${relativePath} (referenced in ${cssRelativePath})`);
         }
         // Return the updated url() with the new relative path with quotes added
-        return `url(${quote}${relativePath}${quote})`;
+        return `url(${quote}${relativePath}${quote})${hasSemicolon ? ';' : ''}`;
+    });
+    // Then replace unquoted URLs
+    return result.replace(urlRegexWithoutQuotes, (match, urlPath) => {
+        // Skip absolute URLs (http/https) and data URLs
+        if (urlPath.startsWith("http") || urlPath.startsWith("data:")) {
+            return match;
+        }
+        console.log(match);
+        // Check if the original match had a semicolon
+        const hasSemicolon = match.endsWith(';');
+        // Trim whitespace from unquoted URLs
+        urlPath = urlPath.trim();
+        // Add the cssPath to the urlPath to resolve the full path
+        const matchPath = path_1.default.join(path_1.default.dirname(cssPath), urlPath);
+        // Then calculate the relative path from the HTML to the file location
+        const relativePath = path_1.default.relative(path_1.default.dirname(htmlPath), matchPath);
+        // Check if the referenced file exists
+        if (!fs_1.default.existsSync(matchPath)) {
+            const cssRelativePath = path_1.default.relative(path_1.default.dirname(htmlPath), cssPath);
+            (0, colors_1.warning)(`\nWarning: Referenced file does not exist: ${relativePath} (referenced in ${cssRelativePath})`);
+        }
+        // Return the updated url() with the new relative path (no quotes for unquoted URLs)
+        return `url(${relativePath})${hasSemicolon ? ';' : ''}`;
     });
 }
 // Function to merge the content of multiple files into a single string
