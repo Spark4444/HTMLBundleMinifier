@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const regex_1 = require("../regex");
+const regex_1 = require("../data/regex");
 const colors_1 = require("./colors");
 // Function to replace CSS and JS links in HTML with their content
 function replaceCSSJSLinks(htmlContent, content, tag) {

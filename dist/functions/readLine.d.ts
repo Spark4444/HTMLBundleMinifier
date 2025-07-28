@@ -1,5 +1,5 @@
 import readline from "readline";
-import { FileItem } from "../interfaces";
+import { FileItem } from "../data/interfaces";
 declare const rs: readline.Interface;
 declare function askQuestion(query: string): Promise<string>;
 declare function promptForMinificationOption(varaible: boolean, fileType: string, verbose: boolean): Promise<boolean>;

@@ -2,8 +2,8 @@ import readline from "readline";
 import fs from "fs";
 import path from "path";
 import { log, warning, success } from "./colors";
-import { linkRegex, scriptRegex,  styleRegex, inlineScriptRegex } from "../regex";
-import { FileItem } from "../interfaces";
+import { linkRegex, scriptRegex,  styleRegex, inlineScriptRegex } from "../data/regex";
+import { FileItem } from "../data/interfaces";
 
 const rs = readline.createInterface({
     input: process.stdin,

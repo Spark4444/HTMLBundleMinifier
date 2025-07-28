@@ -3,7 +3,7 @@ import { error, success} from "./colors";
 import * as prettier from "prettier";
 import replaceCSSJSLinks from "./replaceCSSJSLinks";
 
-import { MinifierOptions, BundlerOptions } from "../interfaces";
+import { MinifierOptions, BundlerOptions } from "../data/interfaces";
 
 // Minify HTML files using html-minifier-terser
 export async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, options: MinifierOptions): Promise<void> {

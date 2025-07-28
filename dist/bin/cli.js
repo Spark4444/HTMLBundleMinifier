@@ -1,60 +1,31 @@
 #!/usr/bin/env node
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const path = require("path");
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 // Import the main function from the index file
-const main = require(path.join(__dirname, "../", "index"));
-const colors_1 = require("../functions/colors");
+const main = require(path_1.default.join(__dirname, "../", "index"));
 // CLI arguments
 const args = process.argv.slice(2);
 const version = require("../../package.json").version;
+const colors_1 = require("../functions/colors");
+const optionKeys_1 = require("./data/optionKeys");
+const cliFunctions_1 = require("./functions/cliFunctions");
 // Options example: html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
 // This function parses the command line arguments and options
 function parseOptions(args) {
-    let optionList = [
-        "--help",
-        "--version",
-        "--no-css",
-        "--no-js",
-        "--input",
-        "--output",
-        "--no-verbose",
-        "--bundle",
-        "--full-prompt",
-        "--no-mangle-js",
-        "--keep-comments",
-        "--keep-console",
-        "--no-pretty-html",
-        "--no-collapse-whitespace",
-        // Small versions of the options
-        "-h", // --help
-        "-v", // --version
-        "-c", // --no-css
-        "-j", // --no-js
-        "-i", // --input
-        "-o", // --output
-        "-V", // --no-verbose
-        "-b", // --bundle
-        "-f", // --full-prompt
-        "-m", // --no-mangle-js
-        "-C", // --keep-comments
-        "-l", // --keep-console
-        "-p", // --no-pretty-html
-        "-w" // --no-collapse-whitespace
-    ];
-    // Function to check if an argument is an option
-    function isAnOption(arg) {
-        return optionList.includes(arg);
-    }
     let invalidOptions = [];
     // Check for invalid options/non-existing options
     args.forEach((arg, index) => {
         // Check if the argument is an option
-        if (!isAnOption(arg)) {
+        if (!(0, cliFunctions_1.isAnOption)(arg)) {
             // Check if the argument before is an I/O option
             // List of i/o options
-            let IO_Options = ["--input", "-i", "--output", "-o"];
-            if (IO_Options.includes(args[index - 1])) {
+            let IOOptions = ["--input", "-i", "--output", "-o", "--config", "-g"];
+            if (IOOptions.includes(args[index - 1])) {
                 // If the argument is not an option and the previous one is an i/o option, it's valid
                 return;
             }
@@ -68,6 +39,11 @@ function parseOptions(args) {
     if (invalidOptions.length > 0) {
         if (invalidOptions.length === 1) {
             (0, colors_1.error)(`Invalid option: ${invalidOptions[0]}`);
+            // Show suggestions only for a single invalid option
+            const suggestion = (0, cliFunctions_1.autocompleteOption)(invalidOptions[0], optionKeys_1.optionList);
+            if (suggestion !== invalidOptions[0]) {
+                (0, colors_1.error)(`Perhaps you meant "${suggestion}"? \n`);
+            }
         }
         else {
             (0, colors_1.error)(`Invalid options: ${invalidOptions.join(", ")}`);
@@ -93,20 +69,21 @@ Input/output files always need to be specified with the --input or -i and --outp
 You can also place options before or after or in middle of the input and output options.
 
 Options:
---help, -h          Show this help message
---version, -v       Show the version of the HTML Bundle Minifier
---no-css, -c        Do not minify CSS files
---no-js, -j         Do not minify JS files
---input, -i         Specify the input HTML file (default: prompt)
---output, -o        Specify the output HTML file (default: <inputFile>.min.html)
---no-verbose, -V    Disable verbose mode (default: true)
---bundle, -b        Bundle without minification (default: false)
---full-prompt, -f   Enable full prompt mode (default: false)
---no-mangle-js, -m  Do not mangle JS variable names (default: false)
---keep-comments, -C Keep comments in the minified HTML (default: false)
---keep-console, -l  Keep console statements in the minified JS (default: false)
---no-pretty-html, -p Skip HTML prettification (default: false)
---no-collapse-whitespace, -w Skip whitespace removal (default: false)
+--help, -h                      Show this help message
+--version, -v                   Show the version of the HTML Bundle Minifier
+--config, -g                    Specify a config file
+--no-css, -c                    Do not minify CSS files (default: true)
+--no-js, -j                     Do not minify JS files (default: true)
+--input, -i                     Specify the input HTML file (default: prompt)
+--output, -o                    Specify the output HTML file (default: <inputFile>.min.html)
+--no-verbose, -V                Disable verbose mode (default: true)
+--bundle, -b                    Bundle without minification (default: false)
+--full-prompt, -f               Enable full prompt mode (default: false)
+--no-mangle-js, -m              Do not mangle JS variable names (default: false)
+--keep-comments, -C             Keep comments in the minified HTML (default: false)
+--keep-console, -l              Keep console statements in the minified JS (default: false)
+--no-pretty-html, -p            Skip HTML prettification (default: false)
+--no-collapse-whitespace, -w    Skip whitespace removal (default: false)
 
 Examples:
 html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
@@ -118,6 +95,53 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
         else if (args.includes("--version") || args.includes("-v")) {
             (0, colors_1.log)(version);
             process.exit(0);
+        }
+        else if (args.includes("--config") || args.includes("-g")) {
+            // Ignore all options except for the config file and input/output files
+            let options = {};
+            let inputFile = undefined;
+            let outputFile = undefined;
+            args.forEach((arg, index) => {
+                if (arg === "--config" || arg === "-g") {
+                    const configPath = args[index + 1];
+                    if (configPath) {
+                        const configContent = fs_1.default.readFileSync(configPath, "utf8");
+                        try {
+                            options = JSON.parse(configContent);
+                            options.verbose && (0, colors_1.success)(`Using config file: ${configPath}`);
+                        }
+                        catch (err) {
+                            (0, colors_1.error)("Invalid JSON in config file:", err);
+                            process.exit(1);
+                        }
+                    }
+                    else {
+                        (0, colors_1.error)("Config file path must be specified after --config or -g");
+                        process.exit(1);
+                    }
+                }
+                else if (arg === "--input" || arg === "-i") {
+                    inputFile = (0, cliFunctions_1.checkForInputFile)(args, index, "Input");
+                }
+                else if (arg === "--output" || arg === "-o") {
+                    outputFile = (0, cliFunctions_1.checkForInputFile)(args, index, "Output");
+                }
+            });
+            // Warn user for for any invalid options
+            Object.keys(options).forEach((key) => {
+                if (!optionKeys_1.optionsKeys.includes(key)) {
+                    (0, colors_1.warning)(`Invalid option in config file: ${key}`);
+                    const suggestion = (0, cliFunctions_1.autocompleteOption)(key, optionKeys_1.optionsKeys);
+                    if (suggestion !== key) {
+                        (0, colors_1.warning)(`Perhaps you meant "${suggestion}"?`);
+                    }
+                }
+            });
+            // Call the main function with the parsed options
+            main(inputFile, outputFile, options).catch((err) => {
+                (0, colors_1.error)("An error occurred:", err);
+                process.exit(1);
+            });
         }
         else {
             // Default values for input and output files
@@ -143,24 +167,10 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
                     minifyJS = false;
                 }
                 else if (arg === "--input" || arg === "-i") {
-                    // Basic error checking for input file
-                    if (isAnOption(args[index + 1]) || !args[index + 1]) {
-                        (0, colors_1.error)(`Input file must be specified after ${arg}`);
-                        process.exit(1);
-                    }
-                    else {
-                        inputFile = args[index + 1];
-                    }
+                    inputFile = (0, cliFunctions_1.checkForInputFile)(args, index, "Input");
                 }
                 else if (arg === "--output" || arg === "-o") {
-                    // Basic error checking for output file
-                    if (isAnOption(args[index + 1]) || !args[index + 1]) {
-                        (0, colors_1.error)(`Output file must be specified after ${arg}`);
-                        process.exit(1);
-                    }
-                    else {
-                        outputFile = args[index + 1];
-                    }
+                    outputFile = (0, cliFunctions_1.checkForInputFile)(args, index, "Output");
                 }
                 else if (arg === "--no-verbose" || arg === "-V") {
                     verbose = false;

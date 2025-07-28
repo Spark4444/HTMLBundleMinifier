@@ -11,7 +11,7 @@ const readline_1 = __importDefault(require("readline"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const colors_1 = require("./colors");
-const regex_1 = require("../regex");
+const regex_1 = require("../data/regex");
 const rs = readline_1.default.createInterface({
     input: process.stdin,
     output: process.stdout,

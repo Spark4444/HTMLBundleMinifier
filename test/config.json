@@ -1,0 +1,6 @@
+{
+    "bundle": true,
+    "prettify": true,
+    "verbose": true,
+    "prompts": false
+}

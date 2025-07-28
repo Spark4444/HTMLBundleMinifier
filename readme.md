@@ -14,6 +14,8 @@ A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS,
 - **Verbose Logging**: Detailed output during the minification process
 - **Bundling Options**: Bundles CSS and JS files without minification and uses prettier to format the final HTML
 - **File Auto-detection**: Automatically detects linked CSS and JS files in your HTML and inline styles/scripts
+- **Config File Support**: Ability to specify a config file for default options
+- **Automatic autocomplete for options**: Provides suggestions for invalid options and arguments
 
 ## Installation
 
@@ -52,6 +54,7 @@ html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
 |--------|-------|-------------|
 | `--help` | `-h` | Show help message |
 | `--version` | `-v` | Show version information |
+| `--config` | `-g` | Specify a config file |
 | `--no-css` | `-c` | Skip CSS minification |
 | `--no-js` | `-j` | Skip JavaScript minification |
 | `--input` | `-i` | Specify input file |
@@ -96,6 +99,40 @@ html-bundle-minifier -i index.html -o bundle.min.html --bundle
 html-bundle-minifier -i index.html -o bundle.min.html --verbose
 ```
 
+#### Config File structure reference
+
+```json
+{
+    "minifyCSS": boolean,
+    "minifyJS": boolean,
+    "prompts": boolean,
+    "verbose": boolean,
+    "bundle": boolean,
+    "welcomeMessage": boolean,
+    "mangle": boolean,
+    "removeComments": boolean,
+    "removeConsole": boolean,
+    "prettify": boolean,
+    "whitespaces": boolean
+}
+```
+<br>
+
+- **minifyCSS**: whether to minify CSS files, default is true
+- **minifyJS**: whether to minify JS files, default is true
+- **prompts**: whether to enable interactive prompts, default is true/false
+- **verbose**: whether to enable verbose output, default is true
+- **bundle**: whether to bundle CSS and JS files into the HTML, default is false
+- **welcomeMessage**: whether to show welcome message, default is true/false
+- **mangle**: whether to mangle JS code, default is true
+- **removeComments**: whether to remove comments from the HTML, default is true
+- **removeConsole**: whether to remove console statements from the JS, default is true
+- **prettify**: whether to prettify the HTML after bundling, default is true
+- **whitespaces**: whether to remove unnecessary whitespaces from the HTML, default is true
+<br>
+
+All the fields are optional, if not specified the default values will be used.
+
 ### Programmatic Usage
 
 ```javascript
@@ -110,7 +147,7 @@ await main('input.html', 'output.min.html', {
     minifyJS: true
 });
 
-// All options need to be specified in an object after the input and output file paths
+// All options need to be specified in an object after the input and output file paths the same way as in config file
 
 ```
 

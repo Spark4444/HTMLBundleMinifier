@@ -119,17 +119,8 @@ async function main(inputFile, outputFile, options = {}) {
             process.exit(0);
         }
         else {
-            // Run the main function again with the same options to allow for another run
-            // But this time without the welcome message
-            // And also with prompts enabled to prompt for new minification options
-            main(inputFile, outputFile, {
-                minifyCSS,
-                minifyJS,
-                prompts: true,
-                verbose,
-                bundle,
-                welcomeMessage: false
-            });
+            // Run the main function again
+            main();
         }
     }
     else {

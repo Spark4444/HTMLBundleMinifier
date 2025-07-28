@@ -1,6 +1,6 @@
 import fs from "fs";
 import { error, warning } from "./colors";
-import { FileItem } from "../interfaces";
+import { FileItem } from "../data/interfaces";
 import path from "path";
 
 // Find all the url() in the CSS file and replace them with relative paths to the HTML file

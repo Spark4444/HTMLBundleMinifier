@@ -14,7 +14,7 @@ interface FileItem {
     content: string;
 }
 
-import { Options, MinifierOptions, BundlerOptions } from "./interfaces";
+import { Options, MinifierOptions, BundlerOptions } from "./data/interfaces";
 
 // Options explanation:
 // 1. inputFile: Path to the HTML file to be minified. If not provided, the user will be prompted to enter it.
@@ -159,17 +159,8 @@ async function main(inputFile?: string, outputFile?: string, options: Options = 
             process.exit(0);
         }
         else {
-            // Run the main function again with the same options to allow for another run
-            // But this time without the welcome message
-            // And also with prompts enabled to prompt for new minification options
-            main(inputFile, outputFile, {
-                minifyCSS,
-                minifyJS,
-                prompts: true,
-                verbose,
-                bundle,
-                welcomeMessage: false
-            });
+            // Run the main function again
+            main();
         }
     }
     else {
