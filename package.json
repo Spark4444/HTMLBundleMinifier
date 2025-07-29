@@ -1,6 +1,6 @@
 {
   "name": "html-bundle-minifier",
-  "version": "2.7.0",
+  "version": "3.0.0",
   "description": "A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS, and JavaScript files into a single optimized HTML file.",
   "main": "dist/index.js",
   "bin": {
@@ -31,7 +31,8 @@
   ],
   "dependencies": {
     "html-minifier-terser": "^7.2.0",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "web-file-fetcher": "^1.0.6"
   },
   "devDependencies": {
     "@types/node": "^24.0.10",
