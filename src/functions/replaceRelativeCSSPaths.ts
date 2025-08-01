@@ -24,8 +24,14 @@ function replaceCSSImports(cssPath:string ,cssContent: string, regex: RegExp, ve
         }
 
         // Read the content of the imported CSS file
-        const importedContent = fs.readFileSync(fullPath, "utf8");
-        
+        let importedContent = fs.readFileSync(fullPath, "utf8");
+
+        // Recursively replace @import in the imported CSS content
+        // Before doing that, we need to check if the importedContent has any @import statements
+        if (regex.test(importedContent)) {
+            importedContent = replaceCSSImports(fullPath, importedContent, regex, verbose);
+        }
+
         // Return the content of the imported CSS file
         return importedContent;
     });
@@ -58,14 +64,14 @@ function replaceRegexPaths(match: string, urlPath: string, cssPath: string, html
 
 // Find all the url() in the CSS file and replace them with relative paths to the HTML file
 export function replaceRelativeCSSPaths(htmlPath: string, cssPath: string, cssContent: string, verbose: boolean): string {
+    // @import "path"; or @import url("path");
+    const cssImportRegex = /@import\s+(?:url\s*\(\s*)?(['"]?)([^'")\s]+)\1\s*\)?\s*;/gi;
+
     // Regular expressions to match url() declarations in CSS
     // url("path")
     const urlRegexWithQuotes = /url\((['"])(.*?)\1\)?/g;
     // url(path)
     const urlRegexWithoutQuotes = /url\(([^'"][^)]*)\)?/g;
-
-    // @import "path"; or @import url("path");
-    const cssImportRegex = /@import\s+(?:url\s*\(\s*)?(['"]?)([^'")\s]+)\1\s*\)?\s*;/gi;
 
     // Why two regexes?
     // 1. The first regex captures URLs with quotes (e.g., url("path/to/file.img"))

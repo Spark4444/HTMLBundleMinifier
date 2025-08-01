@@ -16,6 +16,17 @@ A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS,
 - **File Auto-detection**: Automatically detects linked CSS and JS files in your HTML and inline styles/scripts
 - **Config File Support**: Ability to specify a config file for default options
 - **Automatic autocomplete for options**: Provides suggestions for invalid options and arguments
+- **@import Support**: Supports CSS `@import` statements to include additional stylesheets
+
+## Does this tool support import from js?
+No, it would be too complex to implement, compared to @import in CSS, which is much simpler and more straightforward.
+
+### Why?
+1. JavaScript imports can be dynamic and complex, making it difficult to determine dependencies and order of execution.
+2. I would need to find all the imports and their respective variables/functions etc and then move them into the js file, which would require a lot of parsing and analysis. There are also recursive imports, which would make it even more complex.
+
+### What should I do instead?
+You should use the `<script>` tag to include all your javascript files in order in your HTML file, and then use this tool to minify the HTML, CSS, and JS files together.
 
 ## Installation
 
