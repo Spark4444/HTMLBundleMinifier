@@ -7,6 +7,8 @@ import { error } from "./colors";
 export function convertFileToBase64(filePath: string): string {
     if (!fs.existsSync(filePath)) {
         error(`File not found: ${filePath}`);
+        // Return the file path back
+        return filePath;
     }
 
     const fileContent = fs.readFileSync(filePath);
