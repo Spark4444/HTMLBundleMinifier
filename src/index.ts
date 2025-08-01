@@ -111,12 +111,12 @@ async function main(inputFile?: string, outputFile?: string, options: Options = 
 
     // Compile CSS and JS files into a single string
     cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, verbose);
-    compiledCSS = mergeFiles(cssFiles, "CSS", inputFile);
+    compiledCSS = mergeFiles(cssFiles, "CSS", inputFile, verbose);
 
     verbose && log("\n");
 
     jsFiles = await findFiles(htmlContent, "JS", stringInputFile, verbose);
-    compiledJS = mergeFiles(jsFiles, "JS", inputFile);
+    compiledJS = mergeFiles(jsFiles, "JS", inputFile, verbose);
 
     if ((compiledCSS || compiledJS) && verbose) {
         log("\n");

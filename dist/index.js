@@ -77,10 +77,10 @@ async function main(inputFile, outputFile, options = {}) {
     verbose && (0, colors_1.log)("\n");
     // Compile CSS and JS files into a single string
     cssFiles = await (0, readLine_1.findFiles)(htmlContent, "CSS", stringInputFile, verbose);
-    compiledCSS = (0, mergeFiles_1.default)(cssFiles, "CSS", inputFile);
+    compiledCSS = (0, mergeFiles_1.default)(cssFiles, "CSS", inputFile, verbose);
     verbose && (0, colors_1.log)("\n");
     jsFiles = await (0, readLine_1.findFiles)(htmlContent, "JS", stringInputFile, verbose);
-    compiledJS = (0, mergeFiles_1.default)(jsFiles, "JS", inputFile);
+    compiledJS = (0, mergeFiles_1.default)(jsFiles, "JS", inputFile, verbose);
     if ((compiledCSS || compiledJS) && verbose) {
         (0, colors_1.log)("\n");
     }

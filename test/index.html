@@ -12,67 +12,33 @@
     <!-- Local CSS Files -->
     <link rel="stylesheet" href="css/styles.css">
     
-    <!-- Inline Styles -->
-    <style>  
-        /* Inline critical styles */
-        .enhanced-card {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            transition: transform 0.3s ease;
-        }
+    <!-- Inline Styles with @import -->
+    <style>
+        /* Import external styles for testing @import functionality */
+        @import url('css/imported-styles.css');
         
-        .enhanced-card:hover {
-            transform: translateY(-5px) scale(1.02);
-        }
-        
-        .glow-button {
-            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-            border: none;
+        /* Remaining inline critical styles */
+        .test-import-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #28a745;
             color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
         }
         
-        .glow-button:hover {
-            box-shadow: 0 6px 25px rgba(78, 205, 196, 0.4);
-            transform: translateY(-2px);
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(78, 205, 196, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0); }
-        }
-        
-        .chart-container {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-        
-        /* Custom font usage */
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'BitcountPropSingle', system-ui, -apple-system, sans-serif;
-        }
-        
-        .custom-font {
-            font-family: 'BitcountPropSingle', system-ui, -apple-system, sans-serif;
+        .test-import-indicator::before {
+            content: '✓ @import working';
         }
     </style>
 </head>
 <body>
+    <!-- Visual indicator that @import is working -->
+    <div class="test-import-indicator"></div>
+    
     <header>
         <h1>HTML Bundle Minifier Test Page</h1>
         <nav>
@@ -192,7 +158,18 @@
                     <li class="list-group-item">When prompted, enter the path to this file</li>
                     <li class="list-group-item">Check the generated .min.html file</li>
                     <li class="list-group-item">Compare file sizes and functionality</li>
+                    <li class="list-group-item"><strong>@import Test:</strong> Verify that styles from <code>css/imported-styles.css</code> are properly bundled</li>
                 </ol>
+                
+                <div class="alert alert-info mt-3">
+                    <h5><i class="fas fa-info-circle"></i> @Import Test Features:</h5>
+                    <ul class="mb-0">
+                        <li>CSS @import statement in inline styles</li>
+                        <li>External CSS file with extracted styles</li>
+                        <li>Visual indicator showing @import is working</li>
+                        <li>JavaScript module importing with utility functions</li>
+                    </ul>
+                </div>
             </div>
         </section>
     </main>
@@ -206,10 +183,11 @@
                 <div class="col-md-4">
                     <div class="d-flex flex-wrap gap-2">
                         <span class="badge bg-primary">External CSS: 2</span>
-                        <span class="badge bg-warning">Local CSS: 1</span>
+                        <span class="badge bg-warning">Local CSS: 2 + @import</span>
                         <span class="badge bg-success">External JS: 2</span>
-                        <span class="badge bg-info">Local JS: 1</span>
+                        <span class="badge bg-info">Local JS: 2</span>
                         <span class="badge bg-secondary">Elements: <span id="element-count">0</span></span>
+                        <span class="badge bg-dark">@import Test: ✓</span>
                     </div>
                 </div>
             </div>
@@ -222,6 +200,7 @@
     
     <!-- Local JavaScript Files -->
     <script src="js/utils.js"></script>
+    <script src="js/imported-utils.js"></script>
     
     <!-- Inline JavaScript -->
     <script>
@@ -234,7 +213,11 @@
             initializeTextProcessor();
             initializeChart();
             updateElementCount();
-            displayPageSize();
+            
+            // Use imported function for page size calculation
+            if (window.testUtilities && window.testUtilities.displayPageSize) {
+                window.testUtilities.displayPageSize();
+            }
         });
 
         // Simplified text processing

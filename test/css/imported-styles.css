@@ -1,0 +1,61 @@
+/* Imported styles extracted from inline CSS for @import testing */
+
+/* Enhanced card animations and effects */
+.enhanced-card {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    transition: transform 0.3s ease;
+}
+
+.enhanced-card:hover {
+    transform: translateY(-5px) scale(1.02);
+}
+
+/* Glow button styling */
+.glow-button {
+    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.glow-button:hover {
+    box-shadow: 0 6px 25px rgba(78, 205, 196, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Pulse animation */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(78, 205, 196, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0); }
+}
+
+/* Chart container styling */
+.chart-container {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+/* Custom font usage */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'BitcountPropSingle', system-ui, -apple-system, sans-serif;
+}
+
+.custom-font {
+    font-family: 'BitcountPropSingle', system-ui, -apple-system, sans-serif;
+}

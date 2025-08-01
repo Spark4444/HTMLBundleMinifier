@@ -2,3 +2,4 @@
 2. Add the same thing as above for css url() links.
 3. Add embedded assets option.
 4. separate the above into two options: --fetch-remote and --embed-assets
+5. Add @import support for css files.
