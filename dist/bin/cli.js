@@ -84,6 +84,8 @@ Options:
 --keep-console, -l              Keep console statements in the minified JS (default: false)
 --no-pretty-html, -p            Skip HTML prettification (default: false)
 --no-collapse-whitespace, -w    Skip whitespace removal (default: false)
+--fetch-remote, -F              Fetch remote files and embed them (default: false)
+--embed-assets, -E              Embed local assets (default: false)
 
 Examples:
 html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
@@ -162,6 +164,8 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
             let removeConsole = true;
             let prettify = true;
             let whitespaces = true;
+            let fetchRemote = false;
+            let embedAssets = false;
             // Parse the arguments and enable/disable their respective options
             args.forEach((arg, index) => {
                 if (arg === "--no-css" || arg === "-c") {
@@ -208,6 +212,14 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
                     whitespaces = false;
                     verbose && (0, colors_1.success)("Skipping whitespace removal. \n");
                 }
+                else if (arg === "--fetch-remote" || arg === "-F") {
+                    fetchRemote = true;
+                    verbose && (0, colors_1.success)("Fetching remote files is enabled. \n");
+                }
+                else if (arg === "--embed-assets" || arg === "-E") {
+                    embedAssets = true;
+                    verbose && (0, colors_1.success)("Embedding assets is enabled. \n");
+                }
             });
             // If input file is not provided warn the user
             if (!inputFile) {
@@ -231,7 +243,9 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
                 removeComments,
                 removeConsole,
                 prettify,
-                whitespaces
+                whitespaces,
+                embedAssets,
+                fetchRemote
             };
             // Call the main function with the parsed options
             main(inputFile, outputFile, options).catch((err) => {

@@ -8,7 +8,8 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 // Functions and regex imports
 const readLine_1 = require("./functions/readLine");
-const minifyHTML_1 = require("./functions/minifyHTML");
+const minifyHTML_1 = __importDefault(require("./functions/minifyHTML"));
+const bundleHTML_1 = __importDefault(require("./functions/bundleHTML"));
 const mergeFiles_1 = __importDefault(require("./functions/mergeFiles"));
 const colors_1 = require("./functions/colors");
 // Options explanation:
@@ -91,7 +92,7 @@ async function main(inputFile, outputFile, options = {}) {
             prettify,
             verbose
         };
-        await (0, minifyHTML_1.bundleHTML)(stringInputFile, stringOutputFile, compiledCSS, compiledJS, bundlerOptions);
+        await (0, bundleHTML_1.default)(stringInputFile, stringOutputFile, compiledCSS, compiledJS, bundlerOptions);
     }
     else {
         // Otherwise, minify the HTML file with the provided options
@@ -104,7 +105,7 @@ async function main(inputFile, outputFile, options = {}) {
             removeConsole,
             whitespaces
         };
-        await (0, minifyHTML_1.minifyHTML)(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifierOptions);
+        await (0, minifyHTML_1.default)(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifierOptions);
     }
     verbose && (0, colors_1.success)("Minification process completed.");
     welcomeMessage = false; // Disable welcome message after the first run

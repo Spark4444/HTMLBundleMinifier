@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const regex_1 = require("../data/regex");
+const regexes_1 = require("../data/regexes");
 const colors_1 = require("./colors");
 // Function to replace CSS and JS links in HTML with their content
 function replaceCSSJSLinks(htmlContent, content, tag) {
     if (content.trim()) {
         if (tag === "css") {
-            htmlContent = htmlContent.replace(regex_1.removeStylesAndLinksRegex, ""); // Remove all <link> and <style> tags
+            htmlContent = htmlContent.replace(regexes_1.removeStylesAndLinksRegex, ""); // Remove all <link> and <style> tags
             // Insert the compiled CSS in the <head>
             const headCloseIndex = htmlContent.indexOf("</head>");
             if (headCloseIndex !== -1) {
@@ -22,7 +22,7 @@ function replaceCSSJSLinks(htmlContent, content, tag) {
             }
         }
         else {
-            htmlContent = htmlContent.replace(regex_1.removeAllScriptsRegex, ""); // Remove all <script> tags
+            htmlContent = htmlContent.replace(regexes_1.removeAllScriptsRegex, ""); // Remove all <script> tags
             // Insert the compiled JS before </body>
             const bodyCloseIndex = htmlContent.lastIndexOf("</body>");
             if (bodyCloseIndex !== -1) {

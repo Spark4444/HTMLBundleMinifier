@@ -14,7 +14,9 @@ export const CLIOptions: [string, string][] = [
     ["--keep-comments", "-C"],
     ["--keep-console", "-l"],
     ["--no-pretty-html", "-p"],
-    ["--no-collapse-whitespace", "-w"]
+    ["--no-collapse-whitespace", "-w"],
+    ["--fetch-remote", "-F"],
+    ["--embed-assets", "-E"]
 ];
 
 export const mainOptions = [
@@ -28,5 +30,7 @@ export const mainOptions = [
     "removeConsole",
     "prettify",
     "whitespaces",
-    "welcomeMessage"
+    "welcomeMessage",
+    "fetchRemote",
+    "embedAssets"
 ];

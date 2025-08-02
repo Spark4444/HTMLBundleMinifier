@@ -11,7 +11,7 @@ const readline_1 = __importDefault(require("readline"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const colors_1 = require("./colors");
-const regex_1 = require("../data/regex");
+const regexes_1 = require("../data/regexes");
 exports.rs = readline_1.default.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -48,8 +48,8 @@ async function promptForMinificationOption(variable, fileType, verbose) {
 async function findFiles(content, type, inputFile, verbose) {
     let match;
     let result = [];
-    let srcRegex = type === "CSS" ? regex_1.linkRegex : regex_1.scriptRegex;
-    let contentRegex = type === "CSS" ? regex_1.styleRegex : regex_1.inlineScriptRegex;
+    let srcRegex = type === "CSS" ? regexes_1.linkRegex : regexes_1.scriptRegex;
+    let contentRegex = type === "CSS" ? regexes_1.styleRegex : regexes_1.inlineScriptRegex;
     while ((match = srcRegex.exec(content)) !== null) {
         let filePath = match[1];
         if (filePath.startsWith("http"))

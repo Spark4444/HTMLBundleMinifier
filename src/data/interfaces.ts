@@ -10,6 +10,8 @@ export interface Options {
     prettify?: boolean;
     whitespaces?: boolean;
     welcomeMessage?: boolean;
+    fetchRemote?: boolean;
+    embedAssets?: boolean;
 }
 
 export interface MinifierOptions {

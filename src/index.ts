@@ -4,7 +4,8 @@ import path from "path";
 
 // Functions and regex imports
 import { rs, askQuestion, promptForMinificationOption, findFiles } from "./functions/readLine";
-import { minifyHTML, bundleHTML } from "./functions/minifyHTML";
+import minifyHTML from "./functions/minifyHTML";
+import bundleHTML from "./functions/bundleHTML";
 import mergeFiles from "./functions/mergeFiles";
 import { log, error, success } from "./functions/colors";
 

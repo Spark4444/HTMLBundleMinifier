@@ -1,4 +1,4 @@
-import { removeStylesAndLinksRegex, removeAllScriptsRegex } from "../data/regex";
+import { removeStylesAndLinksRegex, removeAllScriptsRegex } from "../data/regexes";
 import { warning } from "./colors";
 
 // Function to replace CSS and JS links in HTML with their content

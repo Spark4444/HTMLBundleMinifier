@@ -17,7 +17,9 @@ exports.CLIOptions = [
     ["--keep-comments", "-C"],
     ["--keep-console", "-l"],
     ["--no-pretty-html", "-p"],
-    ["--no-collapse-whitespace", "-w"]
+    ["--no-collapse-whitespace", "-w"],
+    ["--fetch-remote", "-F"],
+    ["--embed-assets", "-E"]
 ];
 exports.mainOptions = [
     "verbose",
@@ -30,6 +32,8 @@ exports.mainOptions = [
     "removeConsole",
     "prettify",
     "whitespaces",
-    "welcomeMessage"
+    "welcomeMessage",
+    "fetchRemote",
+    "embedAssets"
 ];
 //# sourceMappingURL=optionKeys.js.map

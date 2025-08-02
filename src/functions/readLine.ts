@@ -2,7 +2,7 @@ import readline from "readline";
 import fs from "fs";
 import path from "path";
 import { log, warning, success } from "./colors";
-import { linkRegex, scriptRegex,  styleRegex, inlineScriptRegex } from "../data/regex";
+import { linkRegex, scriptRegex,  styleRegex, inlineScriptRegex } from "../data/regexes";
 import { FileItem } from "../data/interfaces";
 
 export const rs = readline.createInterface({

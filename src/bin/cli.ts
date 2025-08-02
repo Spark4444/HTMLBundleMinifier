@@ -92,6 +92,8 @@ Options:
 --keep-console, -l              Keep console statements in the minified JS (default: false)
 --no-pretty-html, -p            Skip HTML prettification (default: false)
 --no-collapse-whitespace, -w    Skip whitespace removal (default: false)
+--fetch-remote, -F              Fetch remote files and embed them (default: false)
+--embed-assets, -E              Embed local assets (default: false)
 
 Examples:
 html-bundle-minifier -i input.html -o output.min.html --no-css --no-js
@@ -174,6 +176,8 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
             let removeConsole: boolean = true;
             let prettify: boolean = true;
             let whitespaces: boolean = true;
+            let fetchRemote: boolean = false;
+            let embedAssets: boolean = false;
 
             // Parse the arguments and enable/disable their respective options
             args.forEach((arg, index) => {
@@ -221,6 +225,14 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
                     whitespaces = false;
                     verbose && success("Skipping whitespace removal. \n");
                 }
+                else if (arg === "--fetch-remote" || arg === "-F") {
+                    fetchRemote = true;
+                    verbose && success("Fetching remote files is enabled. \n");
+                }
+                else if (arg === "--embed-assets" || arg === "-E") {
+                    embedAssets = true;
+                    verbose && success("Embedding assets is enabled. \n");
+                }
             });
 
             // If input file is not provided warn the user
@@ -247,8 +259,11 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
                 removeComments,
                 removeConsole,
                 prettify,
-                whitespaces
+                whitespaces,
+                embedAssets,
+                fetchRemote
             };
+            
             // Call the main function with the parsed options
             main(inputFile, outputFile, options).catch((err: Error) => {
                 error("An error occurred:", err);
