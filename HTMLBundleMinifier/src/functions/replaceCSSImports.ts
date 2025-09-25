@@ -1,38 +1,37 @@
 import fs from "fs";
 import path from "path";
+import postcss from "postcss";
 import { warning, success } from "./colors.js";
+import replaceRegexPaths from "./replaceRegexPaths.js";
 
-// Function to replace @import with css content from the acual file
-export default function replaceCSSImports(cssPath:string ,cssContent: string, regex: RegExp, verbose: boolean): string {
-    return cssContent.replace(regex, (match, quote, importPath) => {
-        quote = quote || ""; // Default to empty string if no quote is provided
-        // Skip absolute URLs (http/https) and data URLs
-        if (importPath.startsWith("http") || importPath.startsWith("data:")) {
-            return match;
-        }
+// Function to replace @import with css content from the actual file
+export default function replaceCSSImports(parsedCSS: any, cssPath: string, verbose: boolean): any {
+    parsedCSS.walkAtRules('import', (atRule: any) => {
+        let importPath = atRule.params.replace(/^(url\()?['"]?/, '').replace(/['"]?\)?;?$/, '');
 
-        // Resolve the full path to the imported CSS file
-        const fullPath = path.resolve(path.dirname(cssPath), importPath);
+        const fullImportPath = path.resolve(path.dirname(cssPath), importPath);
 
-        // Check if the file exists
-        if (!fs.existsSync(fullPath)) {
-            warning(`\nWarning: @imported file does not exist: ${fullPath} (referenced in ${cssPath})`);
-            return match; // Return the original match if the file doesn't exist
+        if (!importPath.startsWith("http") && !importPath.startsWith("data:")) {
+            if (importPath.endsWith(".css") && fs.existsSync(fullImportPath)) { 
+                // Parse and inline the imported CSS content
+                const importedCSS = fs.readFileSync(fullImportPath, "utf8");
+                let importedParsedCSS = postcss.parse(importedCSS);
+
+                // Replace relative paths in the imported CSS content to match the origin CSS file 
+                // Ignore any errors since it will get double-processed later
+                importedParsedCSS = replaceRegexPaths(importedParsedCSS, fullImportPath, cssPath, false);
+
+                verbose && success(`Found @import: ${path.relative(path.dirname(cssPath), fullImportPath)} in ${path.relative(path.dirname(cssPath), cssPath)}.\n`);
+
+                atRule.replaceWith(importedParsedCSS);
+            }
+            else {
+                verbose && warning(`\nWarning: referenced @import file does not exist or is not a local CSS file: ${importPath} (referenced in ${path.relative(path.dirname(cssPath), cssPath)})\n`);
+            }
         }
         else {
-            verbose && success(`\nFound @import: ${path.relative(path.dirname(cssPath), fullPath)} (referenced in ${path.relative(path.dirname(cssPath), cssPath)})`);
+            // Skip for now
         }
-
-        // Read the content of the imported CSS file
-        let importedContent = fs.readFileSync(fullPath, "utf8");
-
-        // Recursively replace @import in the imported CSS content
-        // Before doing that, we need to check if the importedContent has any @import statements
-        if (regex.test(importedContent)) {
-            importedContent = replaceCSSImports(fullPath, importedContent, regex, verbose);
-        }
-
-        // Return the content of the imported CSS file
-        return importedContent;
     });
+    return parsedCSS;
 }

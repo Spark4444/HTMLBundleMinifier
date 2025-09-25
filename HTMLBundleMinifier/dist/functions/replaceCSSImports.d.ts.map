@@ -1,1 +1,1 @@
-{"version":3,"file":"replaceCSSImports.d.ts","sourceRoot":"","sources":["../../src/functions/replaceCSSImports.ts"],"names":[],"mappings":"AAKA,MAAM,CAAC,OAAO,UAAU,iBAAiB,CAAC,OAAO,EAAC,MAAM,EAAE,UAAU,EAAE,MAAM,EAAE,KAAK,EAAE,MAAM,EAAE,OAAO,EAAE,OAAO,GAAG,MAAM,CAgCrH"}
+{"version":3,"file":"replaceCSSImports.d.ts","sourceRoot":"","sources":["../../src/functions/replaceCSSImports.ts"],"names":[],"mappings":"AAOA,MAAM,CAAC,OAAO,UAAU,iBAAiB,CAAC,SAAS,EAAE,GAAG,EAAE,OAAO,EAAE,MAAM,EAAE,OAAO,EAAE,OAAO,GAAG,GAAG,CA6BhG"}

@@ -246,52 +246,6 @@ Exiting...
 6. **Minify HTML**: Removes unnecessary whitespace, comments, and optimizes the HTML as well as inlined CSS/JS
 7. **Output**: Saves the final minified and bundled HTML file into the specified output file
 
-## File Structure
-
-```
-html-bundle-minifier/
-├── src/
-│   ├── index.ts             # Main application logic
-│   ├── bin/
-│   │   ├── cli.ts           # CLI functionality
-│   │   ├── data/
-│   │   │   └── optionKeys.ts # CLI option keys definitions
-│   │   └── functions/
-│   │       └── cliFunctions.ts # CLI utility functions
-│   ├── data/
-│   │   ├── interfaces.ts    # TypeScript interfaces for options structures
-│   │   └── regex.ts         # Regular expressions for file detection
-│   └── functions/
-│       ├── colors.ts        # Console colors utils 
-│       ├── mergeFiles.ts    # File merging utils
-│       ├── minifyHTML.ts    # HTML minification logic
-│       ├── readLine.ts      # User input handling
-│       └── replaceCSSJSLinks.ts # CSS/JS link replacement utilities
-├── test/                    # Test files and examples
-│   ├── config.json          # Test configuration file
-│   ├── index.html           # Test HTML file
-│   ├── index.min.html       # Minified test output
-│   ├── missing.html         # Test file for missing resources
-│   ├── missing.min.html     # Minified output for missing resources test
-│   ├── warning.txt          # Test warnings file
-│   ├── css/
-│   │   ├── additional-styles.css # Additional CSS styles for testing
-│   │   └── styles.css       # Main CSS styles for testing
-│   ├── fonts/
-│   │   └── BitcountPropSingle-VariableFont_CRSV,ELSH,ELXP,slnt,wght.ttf # Test font file
-│   └── js/
-│       ├── main.js          # Main JavaScript file for testing
-│       └── utils.js         # Utility JavaScript functions for testing
-├── dist/                    # Compiled TypeScript output (generated)
-├── .gitignore               # Git ignore rules
-├── license.txt              # Project license
-├── package-lock.json        # NPM lock file
-├── package.json             # NPM package configuration
-├── README.md                # Project documentation
-├── TODO.md                  # Project todo list
-└── tsconfig.json            # TypeScript configuration
-```
-
 ## Requirements
 
 - Node.js 12.0 or higher

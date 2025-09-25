@@ -1,2 +1,2 @@
-export default function replaceCSSImports(cssPath: string, cssContent: string, regex: RegExp, verbose: boolean): string;
+export default function replaceCSSImports(parsedCSS: any, cssPath: string, verbose: boolean): any;
 //# sourceMappingURL=replaceCSSImports.d.ts.map

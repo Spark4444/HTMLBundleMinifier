@@ -1,7 +1,8 @@
 import fs from "fs";
+import path from "path";
 import { error } from "./colors.js";
 import { FileItem } from "../data/interfaces.js";
-import { replaceRelativeCSSPaths } from "./replaceRelativeCSSPaths.js";
+import { replaceRelativeCSSPathsAndImports } from "./replaceRelativeCSSPaths.js";
 
 // Function to merge the content of multiple files into a single string
 // For the js and css files and inline scripts/styles
@@ -10,7 +11,8 @@ function mergeFiles(fileList: FileItem[], type: string, htmlPath: string, verbos
     fileList.forEach((item) => {
         if (item.type === "inline") {
             if (type === "CSS") {
-                item.content = replaceRelativeCSSPaths(htmlPath, htmlPath, item.content, verbose);
+                // For inline CSS, use the HTML file's directory as the base path for relative URLs
+                item.content = replaceRelativeCSSPathsAndImports(htmlPath, htmlPath, item.content, verbose);
             }
             mergedContent += item.content + "\n"; // Add a newline for separation
         }
@@ -20,7 +22,7 @@ function mergeFiles(fileList: FileItem[], type: string, htmlPath: string, verbos
                 let content = fs.readFileSync(filePath, "utf8");
                 // If it's a CSS file, replace relative paths to the HTML file
                 if (type === "CSS") {
-                    content = replaceRelativeCSSPaths(htmlPath, filePath, content, verbose);
+                    content = replaceRelativeCSSPathsAndImports(htmlPath, filePath, content, verbose);
                 }
                 mergedContent += content + "\n"; // Add a newline for separation
             }
