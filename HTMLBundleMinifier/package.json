@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@types/html-minifier-terser": "^7.0.2",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^24.0.10",
     "tsx": "^4.20.5",
     "typescript": "^5.8.3"

@@ -1,3 +1,4 @@
 import { MinifierOptions } from "../data/interfaces.js";
-export default function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, options: MinifierOptions): Promise<void>;
+import { JSDOM } from "jsdom";
+export default function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, dom: JSDOM, options: MinifierOptions): Promise<void>;
 //# sourceMappingURL=minifyHTML.d.ts.map

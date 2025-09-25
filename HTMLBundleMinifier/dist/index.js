@@ -7,6 +7,7 @@ import minifyHTML from "./functions/minifyHTML.js";
 import bundleHTML from "./functions/bundleHTML.js";
 import mergeFiles from "./functions/mergeFiles.js";
 import { log, error, success } from "./functions/colors.js";
+import { JSDOM, VirtualConsole } from "jsdom";
 // Main function to handle the minification process
 export default async function main(inputFile, outputFile, options = {}) {
     let { minifyCSS = true, minifyJS = true, prompts = true, verbose = true, bundle = false, welcomeMessage = true, mangle = true, removeComments = true, removeConsole = true, prettify = true, whitespaces = true } = options;
@@ -67,11 +68,16 @@ export default async function main(inputFile, outputFile, options = {}) {
     let compiledCSS = "";
     let compiledJS = "";
     verbose && log("\n");
+    const virtualConsole = new VirtualConsole();
+    virtualConsole.on("error", (msg) => {
+        // Suppress jsdom errors
+    });
+    const dom = new JSDOM(htmlContent, { virtualConsole });
     // Compile CSS and JS files into a single string
-    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, verbose);
+    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, dom, verbose);
     compiledCSS = mergeFiles(cssFiles, "CSS", inputFile, verbose);
     verbose && log("\n");
-    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, verbose);
+    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, dom, verbose);
     compiledJS = mergeFiles(jsFiles, "JS", inputFile, verbose);
     if ((compiledCSS || compiledJS) && verbose) {
         log("\n");
@@ -83,7 +89,7 @@ export default async function main(inputFile, outputFile, options = {}) {
             prettify,
             verbose
         };
-        await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, bundlerOptions);
+        await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, dom, bundlerOptions);
     }
     else {
         // Otherwise, minify the HTML file with the provided options
@@ -96,7 +102,7 @@ export default async function main(inputFile, outputFile, options = {}) {
             removeConsole,
             whitespaces
         };
-        await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifierOptions);
+        await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, dom, minifierOptions);
     }
     verbose && success("Minification process completed.");
     welcomeMessage = false; // Disable welcome message after the first run

@@ -3,9 +3,10 @@ import replaceCSSJSLinks from "./replaceCSSJSLinks.js";
 import { MinifierOptions } from "../data/interfaces.js";
 import fs from "fs";
 import htmlMinifierTerser from "html-minifier-terser";
+import { JSDOM } from "jsdom";
 
 // Minify HTML files using html-minifier-terser
-export default async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, options: MinifierOptions): Promise<void> {
+export default async function minifyHTML(htmlContent: string, outputFile: string, cssContent: string, jsContent: string, dom: JSDOM, options: MinifierOptions): Promise<void> {
     const minify = htmlMinifierTerser.minify;
     const { 
         minifyCSS,
@@ -21,11 +22,11 @@ export default async function minifyHTML(htmlContent: string, outputFile: string
     try {
         // Remove all existing CSS and JS tags (both linked and inline)
         if (minifyCSS) {
-            htmlContent = replaceCSSJSLinks(htmlContent, cssContent, "css");
+            htmlContent = replaceCSSJSLinks(htmlContent, cssContent, dom, "css");
         }
         
         if (minifyJS) {
-            htmlContent = replaceCSSJSLinks(htmlContent, jsContent, "js");
+            htmlContent = replaceCSSJSLinks(htmlContent, jsContent, dom, "js");
         }
 
         let minifiedHtml = await minify(htmlContent, {
@@ -45,10 +46,10 @@ export default async function minifyHTML(htmlContent: string, outputFile: string
 
         // If the user specified to not minify CSS or JS, replace the links after minification
         if (!minifyCSS) {
-            minifiedHtml = replaceCSSJSLinks(minifiedHtml, cssContent, "css");
+            minifiedHtml = replaceCSSJSLinks(minifiedHtml, cssContent, dom, "css");
         }
         if (!minifyJS) {
-            minifiedHtml = replaceCSSJSLinks(minifiedHtml, jsContent, "js");
+            minifiedHtml = replaceCSSJSLinks(minifiedHtml, jsContent, dom, "js");
         }
 
         // Write the minified HTML to the output file

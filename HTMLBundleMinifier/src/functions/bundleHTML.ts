@@ -2,19 +2,20 @@ import * as prettier from "prettier";
 import replaceCSSJSLinks from "./replaceCSSJSLinks.js";
 import { BundlerOptions } from "../data/interfaces.js";
 import { error, success } from "./colors.js";
+import { JSDOM } from "jsdom";
 import fs from "fs";
 
 // Bundle HTML by replacing CSS and JS links with their content
 // This function is used when the user specifies the --bundle option
-export default async function bundleHTML(inputFile: string, outputFile: string, cssContent: string, jsContent: string, options: BundlerOptions): Promise<void> {
+export default async function bundleHTML(inputFile: string, outputFile: string, cssContent: string, jsContent: string, dom: JSDOM, options: BundlerOptions): Promise<void> {
     const { prettify, verbose } = options;
 
     try {
         // Read the HTML file content
         let htmlContent = fs.readFileSync(inputFile, "utf8");
 
-        htmlContent = replaceCSSJSLinks(htmlContent, cssContent, "css");
-        htmlContent = replaceCSSJSLinks(htmlContent, jsContent, "js");
+        htmlContent = replaceCSSJSLinks(htmlContent, cssContent, dom, "css");
+        htmlContent = replaceCSSJSLinks(htmlContent, jsContent, dom, "js");
 
         let prettifiedHtml: string = htmlContent;
 

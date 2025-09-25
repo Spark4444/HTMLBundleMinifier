@@ -9,6 +9,8 @@ import bundleHTML from "./functions/bundleHTML.js";
 import mergeFiles from "./functions/mergeFiles.js";
 import { log, error, success } from "./functions/colors.js";
 
+import { JSDOM, VirtualConsole} from "jsdom";
+
 // Interfaces declaration
 interface FileItem {
     type: "inline" | "path";
@@ -105,13 +107,20 @@ export default async function main(inputFile?: string, outputFile?: string, opti
 
     verbose && log("\n");
 
+    const virtualConsole = new VirtualConsole();
+    virtualConsole.on("error", (msg) => {
+        // Suppress jsdom errors
+    });
+
+    const dom = new JSDOM(htmlContent, { virtualConsole });
+
     // Compile CSS and JS files into a single string
-    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, verbose);
+    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, dom, verbose);
     compiledCSS = mergeFiles(cssFiles, "CSS", inputFile, verbose);
 
     verbose && log("\n");
 
-    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, verbose);
+    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, dom, verbose);
     compiledJS = mergeFiles(jsFiles, "JS", inputFile, verbose);
 
     if ((compiledCSS || compiledJS) && verbose) {
@@ -125,7 +134,7 @@ export default async function main(inputFile?: string, outputFile?: string, opti
             prettify,
             verbose
         };
-        await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, bundlerOptions);
+        await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, dom, bundlerOptions);
     } else {
         // Otherwise, minify the HTML file with the provided options
         const minifierOptions: MinifierOptions = {
@@ -137,7 +146,7 @@ export default async function main(inputFile?: string, outputFile?: string, opti
             removeConsole,
             whitespaces
         };
-        await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, minifierOptions);
+        await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, dom, minifierOptions);
     }
     verbose && success("Minification process completed.");
 

@@ -2,8 +2,8 @@ import readline from "readline";
 import fs from "fs";
 import path from "path";
 import { log, warning, success } from "./colors.js";
-import { linkRegex, scriptRegex,  styleRegex, inlineScriptRegex } from "../data/regexes.js";
 import { FileItem } from "../data/interfaces.js";
+import { JSDOM } from "jsdom";
 
 export const rs = readline.createInterface({
     input: process.stdin,
@@ -40,45 +40,81 @@ export async function promptForMinificationOption(variable: boolean, fileType: s
     return variable;
 }
 
-// Function to find CSS and JS files in the HTML content
-export async function findFiles(content: string, type: string, inputFile: string, verbose: boolean): Promise<FileItem[]> {
-        let match;
-        let result: FileItem[] = [];
-        let srcRegex = type === "CSS" ? linkRegex : scriptRegex;
-        let contentRegex = type === "CSS" ? styleRegex : inlineScriptRegex;
+// Function to find CSS and JS files in the HTML content using JSDOM
+export async function findFiles(content: string, type: string, inputFile: string, dom: JSDOM, verbose: boolean): Promise<FileItem[]> {
+    let result: FileItem[] = [];
+    const document = dom.window.document;
 
-        while ((match = srcRegex.exec(content)) !== null) {
-            let filePath = match[1];
-
-            if (filePath.startsWith("http")) continue; // Skip external links
-
-            verbose && success(`Found ${type} file: ${filePath} \n`);
-            filePath = path.resolve(path.dirname(inputFile), filePath);
-            
-            // Check if the file exists
-            if (fs.existsSync(filePath)) {
-                result.push({
-                    type: "path",
-                    content: filePath
-                });
-            } 
-            else {
-                // If the file does not exist, warn the user and continue
-                warning(`\nWarning: File ${filePath} does not exist, continuing without it.\n`);
+    if (type === "CSS") {
+        // Find external CSS files via <link> tags
+        const linkElements = document.querySelectorAll("link[rel=\"stylesheet\"]");
+        linkElements.forEach((link) => {
+            const href = link.getAttribute("href");
+            if (href && !href.startsWith("http")) { // Skip external links
+                verbose && success(`Found ${type} file: ${href} \n`);
+                const filePath = path.resolve(path.dirname(inputFile), href);
+                
+                // Check if the file exists
+                if (fs.existsSync(filePath)) {
+                    result.push({
+                        type: "path",
+                        content: filePath
+                    });
+                } else {
+                    // If the file does not exist, warn the user and continue
+                    warning(`\nWarning: File ${filePath} does not exist, continuing without it.\n`);
+                }
             }
-        }
+        });
 
-        // Find inline CSS or JS content
-        while ((match = contentRegex.exec(content)) !== null) {
-            let inlineContent = match[1];
+        // Find inline CSS content via <style> tags
+        const styleElements = document.querySelectorAll("style");
+        styleElements.forEach((style) => {
+            const inlineContent = style.textContent || "";
             if (inlineContent.trim()) {
                 verbose && success(`Found inline ${type} content. \n`);
+                result.push({
+                    type: "inline",
+                    content: inlineContent
+                });
             }
-            result.push({
-                type: "inline",
-                content: inlineContent
-            });
-        }
+        });
 
-        return result;
+    } else if (type === "JS") {
+        // Find external JS files via <script> tags with src attribute
+        const scriptElements = document.querySelectorAll("script[src]");
+        scriptElements.forEach((script) => {
+            const src = script.getAttribute("src");
+            if (src && !src.startsWith("http")) { // Skip external links
+                verbose && success(`Found ${type} file: ${src} \n`);
+                const filePath = path.resolve(path.dirname(inputFile), src);
+                
+                // Check if the file exists
+                if (fs.existsSync(filePath)) {
+                    result.push({
+                        type: "path",
+                        content: filePath
+                    });
+                } else {
+                    // If the file does not exist, warn the user and continue
+                    warning(`\nWarning: File ${filePath} does not exist, continuing without it.\n`);
+                }
+            }
+        });
+
+        // Find inline JS content via <script> tags without src attribute
+        const inlineScriptElements = document.querySelectorAll("script:not([src])");
+        inlineScriptElements.forEach((script) => {
+            const inlineContent = script.textContent || "";
+            if (inlineContent.trim()) {
+                verbose && success(`Found inline ${type} content. \n`);
+                result.push({
+                    type: "inline",
+                    content: inlineContent
+                });
+            }
+        });
+    }
+
+    return result;
 }
