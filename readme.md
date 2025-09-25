@@ -147,11 +147,10 @@ All the fields are optional, if not specified the default values will be used.
 ### Programmatic Usage
 
 ```javascript
-const main = require('html-bundle-minifier');
+import main from 'html-bundle-minifier';
 
 // Basic usage
 await main('input.html', 'output.min.html');
-
 // With options
 await main('input.html', 'output.min.html', {
     minifyCSS: true,

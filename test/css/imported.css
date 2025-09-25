@@ -1,0 +1,13 @@
+/* Imported CSS file */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+.imported-style {
+    animation: fadeInUp 1s ease-in-out;
+    background: url('./pattern.png'), url('https://via.placeholder.com/50x50/ff5722/ffffff?text=BG');
+    background-size: 100px 100px, 50px 50px;
+}
+
+.media-element {
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
