@@ -8,9 +8,9 @@ import convertPathToAbsolute from "convert-path-to-absolute";
 
 // CLI arguments
 const args = process.argv.slice(2);
-const __dirname = path.resolve();
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-const packageJsonPath = path.join(__dirname, "/package.json");
+const packageJsonPath = path.join(__dirname, "../../package.json");
 const version = JSON.parse(fs.readFileSync(packageJsonPath, "utf8")).version;
 
 
