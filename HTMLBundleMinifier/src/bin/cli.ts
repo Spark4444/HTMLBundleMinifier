@@ -4,6 +4,7 @@ import path from "path";
 
 // Import the main function from the index file
 import main from "../index.js";
+import convertPathToAbsolute from "convert-path-to-absolute";
 
 // CLI arguments
 const args = process.argv.slice(2);
@@ -117,13 +118,16 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
 
             args.forEach((arg, index) => {
                 if (arg === "--config" || arg === "-g") {
-                    const configPath = args[index + 1];
+                    let configPath = args[index + 1];
                     if (configPath) {
+                        configPath = convertPathToAbsolute(configPath);
                         if (!fs.existsSync(configPath)) {
                             error(`Config file does not exist: ${configPath}`);
                             process.exit(1);
                         }
+
                         const configContent = fs.readFileSync(configPath, "utf8");
+
                         try {
                             options = JSON.parse(configContent);
                             options.verbose && success(`Using config file: ${configPath}`);

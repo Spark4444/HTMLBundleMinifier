@@ -3,3 +3,4 @@
 3. Add embedded assets option.
 4. separate the above into two options: --fetch-remote and --embed-assets
 5. Add @import support for css files.
+6. Fix relative paths when entering a path for input/output files.

@@ -8,6 +8,7 @@ import minifyHTML from "./functions/minifyHTML.js";
 import bundleHTML from "./functions/bundleHTML.js";
 import mergeFiles from "./functions/mergeFiles.js";
 import { log, error, success } from "./functions/colors.js";
+import convertPathToAbsolute from "convert-path-to-absolute";
 
 import { JSDOM, VirtualConsole} from "jsdom";
 
@@ -35,6 +36,10 @@ export default async function main(inputFile?: string, outputFile?: string, opti
         whitespaces = true
     } = options;
 
+    // Check if the input/output files are relative and fix them if they are
+    inputFile = inputFile ? convertPathToAbsolute(inputFile) : undefined;
+    outputFile = outputFile ? convertPathToAbsolute(outputFile) : undefined;
+    
     // Disable welcome message if no prompts are required and second run
     if (!prompts) {
         welcomeMessage = false;

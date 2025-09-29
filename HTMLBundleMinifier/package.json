@@ -11,7 +11,7 @@
     "build": "tsc",
     "dev": "tsx src/bin/cli.ts",
     "start": "node dist/bin/cli.js",
-    "test": "node ../test/test.js"
+    "test": "html-bundle-minifier -i ../test/index.html -o ../test/index.min.html"
   },
   "keywords": [
     "html",
@@ -29,7 +29,7 @@
   "readme": "README.md",
   "files": [
     "dist/",
-    "README.md"
+    "../README.md"
   ],
   "dependencies": {
     "css-selector-parser": "^3.1.3",

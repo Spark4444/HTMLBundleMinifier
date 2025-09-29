@@ -1,5 +1,8 @@
 import { error } from "../../functions/colors.js";
 import { CLIOptions } from "../data/optionKeys.js";
+import path from "path";
+import convertPathToAbsolute from "convert-path-to-absolute";
+const __dirname = path.resolve();
 // Function to autocomplete an option
 export function autocompleteOption(option, array) {
     return array.find(opt => opt.startsWith(option)) || option;
@@ -15,8 +18,7 @@ export function checkForInputFile(args, index, type) {
         error(`${type} file must be specified after ${args[index]}`);
         process.exit(1);
     }
-    else {
-        return file;
-    }
+    // Convert to absolute path if not already
+    return convertPathToAbsolute(file);
 }
 //# sourceMappingURL=cliFunctions.js.map

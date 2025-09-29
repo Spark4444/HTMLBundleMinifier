@@ -7,10 +7,14 @@ import minifyHTML from "./functions/minifyHTML.js";
 import bundleHTML from "./functions/bundleHTML.js";
 import mergeFiles from "./functions/mergeFiles.js";
 import { log, error, success } from "./functions/colors.js";
+import convertPathToAbsolute from "convert-path-to-absolute";
 import { JSDOM, VirtualConsole } from "jsdom";
 // Main function to handle the minification process
 export default async function main(inputFile, outputFile, options = {}) {
     let { minifyCSS = true, minifyJS = true, prompts = true, verbose = true, bundle = false, welcomeMessage = true, mangle = true, removeComments = true, removeConsole = true, prettify = true, whitespaces = true } = options;
+    // Check if the input/output files are relative and fix them if they are
+    inputFile = inputFile ? convertPathToAbsolute(inputFile) : undefined;
+    outputFile = outputFile ? convertPathToAbsolute(outputFile) : undefined;
     // Disable welcome message if no prompts are required and second run
     if (!prompts) {
         welcomeMessage = false;

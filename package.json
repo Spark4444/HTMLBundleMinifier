@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "convert-path-to-absolute": "^1.0.2",
+    "convert-path-to-relative": "^1.0.1"
+  }
+}
