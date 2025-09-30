@@ -5,12 +5,17 @@ import fs from "fs";
 // Bundle HTML by replacing CSS and JS links with their content
 // This function is used when the user specifies the --bundle option
 export default async function bundleHTML(inputFile, outputFile, cssContent, jsContent, dom, options) {
-    const { prettify, verbose } = options;
+    const { prettify, verbose, fetchRemote, embedAssets } = options;
     try {
         // Read the HTML file content
         let htmlContent = fs.readFileSync(inputFile, "utf8");
-        htmlContent = replaceCSSJSLinks(htmlContent, cssContent, dom, "css");
-        htmlContent = replaceCSSJSLinks(htmlContent, jsContent, dom, "js");
+        const htmlOptions = {
+            verbose: verbose,
+            fetchRemote: fetchRemote,
+            embedAssets: embedAssets
+        };
+        htmlContent = replaceCSSJSLinks(htmlContent, cssContent, dom, "css", htmlOptions);
+        htmlContent = replaceCSSJSLinks(htmlContent, jsContent, dom, "js", htmlOptions);
         let prettifiedHtml = htmlContent;
         // If the user specified to prettify the HTML, use prettier to format it
         if (prettify) {

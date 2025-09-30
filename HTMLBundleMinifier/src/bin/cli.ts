@@ -130,6 +130,9 @@ html-bundle-minifier -i input.html -o output.min.html --full-prompt`);
 
                         try {
                             options = JSON.parse(configContent);
+                            if (!options.prompts) {
+                                options.prompts = false;
+                            }
                             options.verbose && success(`Using config file: ${configPath}`);
                         } 
                         catch (err) {

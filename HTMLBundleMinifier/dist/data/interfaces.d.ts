@@ -21,10 +21,14 @@ export interface MinifierOptions {
     removeComments?: boolean;
     removeConsole?: boolean;
     whitespaces?: boolean;
+    fetchRemote?: boolean;
+    embedAssets?: boolean;
 }
 export interface BundlerOptions {
     verbose?: boolean;
     prettify?: boolean;
+    fetchRemote?: boolean;
+    embedAssets?: boolean;
 }
 export interface FileItem {
     type: "inline" | "path";

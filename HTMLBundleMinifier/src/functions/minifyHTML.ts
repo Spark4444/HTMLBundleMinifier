@@ -1,6 +1,6 @@
 import { error, success} from "./colors.js";
 import replaceCSSJSLinks from "./replaceCSSJSLinks.js";
-import { MinifierOptions } from "../data/interfaces.js";
+import { MinifierOptions, HTMLOptions } from "../data/interfaces.js";
 import fs from "fs";
 import htmlMinifierTerser from "html-minifier-terser";
 import { JSDOM } from "jsdom";
@@ -15,42 +15,40 @@ export default async function minifyHTML(htmlContent: string, outputFile: string
         mangle,
         removeComments,
         removeConsole,
-        whitespaces
+        whitespaces,
+        fetchRemote,
+        embedAssets
     } = options;
 
     // Minify each related CSS and JS content and store them inside the HTML and save it to the output file
     try {
         // Remove all existing CSS and JS tags (both linked and inline)
-        if (minifyCSS) {
-            htmlContent = replaceCSSJSLinks(htmlContent, cssContent, dom, "css");
-        }
+        const htmlOptions: HTMLOptions = {
+            verbose: verbose,
+            fetchRemote: fetchRemote,
+            embedAssets: embedAssets
+        };
+
+
+        // Replace CSS and JS links with their content
+        htmlContent = replaceCSSJSLinks(htmlContent, cssContent, dom, "css", htmlOptions);
         
-        if (minifyJS) {
-            htmlContent = replaceCSSJSLinks(htmlContent, jsContent, dom, "js");
-        }
+        htmlContent = replaceCSSJSLinks(htmlContent, jsContent, dom, "js", htmlOptions);
 
         let minifiedHtml = await minify(htmlContent, {
             collapseWhitespace: whitespaces, // Remove unnecessary whitespace
             removeComments: removeComments, // Remove comments
-            minifyCSS: true, // Minify CSS
-            minifyJS: {
+            minifyCSS: minifyCSS ? true : false, // Minify CSS
+            minifyJS: minifyJS ? {
                 mangle: mangle, // Mangle JS variable names e.g. `let myVariable = 1;` to `let a = 1;` and etc in alphabetical order
                 compress: { // Compress JS code
                     drop_console: removeConsole, // Remove console statements
                     drop_debugger: true, // Remove debugger statements
                     pure_funcs: [] // List of functions to be removed from the code
                 }
-            },
+            } : false,
             processScripts: ["text/javascript"]
         });
-
-        // If the user specified to not minify CSS or JS, replace the links after minification
-        if (!minifyCSS) {
-            minifiedHtml = replaceCSSJSLinks(minifiedHtml, cssContent, dom, "css");
-        }
-        if (!minifyJS) {
-            minifiedHtml = replaceCSSJSLinks(minifiedHtml, jsContent, dom, "js");
-        }
 
         // Write the minified HTML to the output file
         fs.writeFileSync(outputFile, minifiedHtml, "utf8");

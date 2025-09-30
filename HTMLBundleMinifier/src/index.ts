@@ -140,7 +140,9 @@ export default async function main(inputFile?: string, outputFile?: string, opti
         // If the user specified the --bundle option, bundle the CSS and JS files without minification
         const bundlerOptions: BundlerOptions = {
             prettify,
-            verbose
+            verbose,
+            fetchRemote,
+            embedAssets
         };
         await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, dom, bundlerOptions);
     } else {
@@ -152,7 +154,9 @@ export default async function main(inputFile?: string, outputFile?: string, opti
             mangle,
             removeComments,
             removeConsole,
-            whitespaces
+            whitespaces,
+            fetchRemote,
+            embedAssets
         };
         await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, dom, minifierOptions);
     }

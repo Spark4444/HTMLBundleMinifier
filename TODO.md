@@ -1,4 +1,3 @@
-1. Add embedding of js/css files from http or https links via fetch with --fetch-remote option
-2. Add the same thing as above for css url() links.
-3. Add embedded assets option.
-4. separate the above into two options: --fetch-remote and --embed-assets
+1. Add embedding/fetching of html element src, hrefs etc.
+2. Optimize the base64 conversion by storing already converted files in a map and then reusing them.
+3. Do the same for the fetched files, instead of refetching them store and reuse them.

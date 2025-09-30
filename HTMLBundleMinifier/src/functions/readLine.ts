@@ -146,5 +146,5 @@ export async function findFiles(content: string, type: string, inputFile: string
         });
     }
 
-    return result;
+    return Promise.resolve(result);
 }

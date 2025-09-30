@@ -8,7 +8,7 @@ import fetchFile from "web-file-fetcher";
 export default async function replaceCSSImports(parsedCSS, cssPath, htmlOptions) {
     const { verbose, fetchRemote } = htmlOptions;
     const promises = [];
-    parsedCSS.walkAtRules('import', (atRule) => {
+    parsedCSS.walkAtRules("import", (atRule) => {
         const promise = (async () => {
             let importPath = atRule.params.replace(/^(url\()?['"]?/, '').replace(/['"]?\)?;?$/, '');
             const fullImportPath = path.resolve(path.dirname(cssPath), importPath);

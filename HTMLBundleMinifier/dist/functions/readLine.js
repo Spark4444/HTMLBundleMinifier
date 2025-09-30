@@ -138,6 +138,6 @@ export async function findFiles(content, type, inputFile, dom, htmlOptions) {
             }
         });
     }
-    return result;
+    return Promise.resolve(result);
 }
 //# sourceMappingURL=readLine.js.map

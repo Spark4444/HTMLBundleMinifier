@@ -14,8 +14,8 @@ export default async function replaceCSSImports(parsedCSS: any, cssPath: string,
     } = htmlOptions;
 
     const promises: Promise<void>[] = [];
-    
-    parsedCSS.walkAtRules('import', (atRule: any) => {
+
+    parsedCSS.walkAtRules("import", (atRule: any) => {
         const promise = (async () => {
             let importPath = atRule.params.replace(/^(url\()?['"]?/, '').replace(/['"]?\)?;?$/, '');
 

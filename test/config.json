@@ -1,6 +1,4 @@
 {
     "embedAssets": true,
-    "fetchRemote": true,
-    "prompts": true,
-    "verbose": true
+    "fetchRemote": true
 }
