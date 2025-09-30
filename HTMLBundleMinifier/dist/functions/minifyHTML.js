@@ -1,22 +1,12 @@
 import { error, success } from "./colors.js";
-import replaceCSSJSLinks from "./replaceCSSJSLinks.js";
 import fs from "fs";
 import htmlMinifierTerser from "html-minifier-terser";
 // Minify HTML files using html-minifier-terser
-export default async function minifyHTML(htmlContent, outputFile, cssContent, jsContent, dom, options) {
+export default async function minifyHTML(htmlContent, outputFile, options) {
     const minify = htmlMinifierTerser.minify;
     const { minifyCSS, minifyJS, verbose, mangle, removeComments, removeConsole, whitespaces, fetchRemote, embedAssets } = options;
     // Minify each related CSS and JS content and store them inside the HTML and save it to the output file
     try {
-        // Remove all existing CSS and JS tags (both linked and inline)
-        const htmlOptions = {
-            verbose: verbose,
-            fetchRemote: fetchRemote,
-            embedAssets: embedAssets
-        };
-        // Replace CSS and JS links with their content
-        htmlContent = replaceCSSJSLinks(htmlContent, cssContent, dom, "css", htmlOptions);
-        htmlContent = replaceCSSJSLinks(htmlContent, jsContent, dom, "js", htmlOptions);
         let minifiedHtml = await minify(htmlContent, {
             collapseWhitespace: whitespaces, // Remove unnecessary whitespace
             removeComments: removeComments, // Remove comments

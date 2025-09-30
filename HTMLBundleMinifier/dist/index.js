@@ -9,6 +9,7 @@ import mergeFiles from "./functions/mergeFiles.js";
 import { log, error, success } from "./functions/colors.js";
 import convertPathToAbsolute from "convert-path-to-absolute";
 import { JSDOM, VirtualConsole } from "jsdom";
+import replaceCSSJSLinks from "./functions/replaceCSSJSLinks.js";
 // Main function to handle the minification process
 export default async function main(inputFile, outputFile, options = {}) {
     let { minifyCSS = true, minifyJS = true, prompts = true, verbose = true, bundle = false, welcomeMessage = true, mangle = true, removeComments = true, removeConsole = true, prettify = true, whitespaces = true, fetchRemote = false, embedAssets = false, } = options;
@@ -76,7 +77,7 @@ export default async function main(inputFile, outputFile, options = {}) {
     virtualConsole.on("error", (msg) => {
         // Suppress jsdom errors
     });
-    const dom = new JSDOM(htmlContent, { virtualConsole });
+    let dom = new JSDOM(htmlContent, { virtualConsole });
     const htmlOptions = {
         verbose,
         fetchRemote,
@@ -91,6 +92,10 @@ export default async function main(inputFile, outputFile, options = {}) {
     if ((compiledCSS || compiledJS) && verbose) {
         log("\n");
     }
+    // Replace CSS and JS links in the HTML with the compiled content
+    dom = replaceCSSJSLinks(dom, compiledCSS, "css", htmlOptions);
+    dom = replaceCSSJSLinks(dom, compiledJS, "js", htmlOptions);
+    htmlContent = dom.serialize();
     // Minify HTML
     if (bundle) {
         // If the user specified the --bundle option, bundle the CSS and JS files without minification
@@ -100,7 +105,7 @@ export default async function main(inputFile, outputFile, options = {}) {
             fetchRemote,
             embedAssets
         };
-        await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, dom, bundlerOptions);
+        await bundleHTML(htmlContent, stringOutputFile, bundlerOptions);
     }
     else {
         // Otherwise, minify the HTML file with the provided options
@@ -115,7 +120,7 @@ export default async function main(inputFile, outputFile, options = {}) {
             fetchRemote,
             embedAssets
         };
-        await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, dom, minifierOptions);
+        await minifyHTML(htmlContent, stringOutputFile, minifierOptions);
     }
     verbose && success("Minification process completed.");
     welcomeMessage = false; // Disable welcome message after the first run

@@ -3,7 +3,7 @@ import { JSDOM } from "jsdom";
 import { HTMLOptions } from "./../data/interfaces";
 
 // Function to replace CSS and JS links in HTML with their content using JSDOM
-function replaceCSSJSLinks(htmlContent: string, content: string, dom: JSDOM, tag: string, htmlOptions: HTMLOptions): string {
+function replaceCSSJSLinks(dom: JSDOM, content: string, tag: string, htmlOptions: HTMLOptions): JSDOM {
     if (content.trim()) {
         const { fetchRemote } = htmlOptions;
 
@@ -72,10 +72,11 @@ function replaceCSSJSLinks(htmlContent: string, content: string, dom: JSDOM, tag
         }
 
         // Return the modified HTML
-        return dom.serialize();
+        return dom;
     }
-    
-    return htmlContent;
+    else {
+        return dom;
+    }
 }
 
 export default replaceCSSJSLinks;

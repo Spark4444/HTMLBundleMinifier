@@ -14,6 +14,7 @@ import { JSDOM, VirtualConsole} from "jsdom";
 
 // Interfaces declaration
 import { Options, MinifierOptions, BundlerOptions, FileItem, HTMLOptions } from "./data/interfaces.js";
+import replaceCSSJSLinks from "./functions/replaceCSSJSLinks.js";
 
 // Main function to handle the minification process
 export default async function main(inputFile?: string, outputFile?: string, options: Options = {}): Promise<void> {
@@ -114,7 +115,7 @@ export default async function main(inputFile?: string, outputFile?: string, opti
         // Suppress jsdom errors
     });
 
-    const dom = new JSDOM(htmlContent, { virtualConsole });
+    let dom = new JSDOM(htmlContent, { virtualConsole });
 
     const htmlOptions: HTMLOptions = {
         verbose,
@@ -135,6 +136,12 @@ export default async function main(inputFile?: string, outputFile?: string, opti
         log("\n");
     }
 
+    // Replace CSS and JS links in the HTML with the compiled content
+    dom = replaceCSSJSLinks(dom, compiledCSS, "css", htmlOptions);
+    dom = replaceCSSJSLinks(dom, compiledJS, "js", htmlOptions);
+
+    htmlContent = dom.serialize();
+
     // Minify HTML
     if (bundle) {
         // If the user specified the --bundle option, bundle the CSS and JS files without minification
@@ -144,7 +151,7 @@ export default async function main(inputFile?: string, outputFile?: string, opti
             fetchRemote,
             embedAssets
         };
-        await bundleHTML(stringInputFile, stringOutputFile, compiledCSS, compiledJS, dom, bundlerOptions);
+        await bundleHTML(htmlContent, stringOutputFile, bundlerOptions);
     } else {
         // Otherwise, minify the HTML file with the provided options
         const minifierOptions: MinifierOptions = {
@@ -158,7 +165,7 @@ export default async function main(inputFile?: string, outputFile?: string, opti
             fetchRemote,
             embedAssets
         };
-        await minifyHTML(htmlContent, stringOutputFile, compiledCSS, compiledJS, dom, minifierOptions);
+        await minifyHTML(htmlContent, stringOutputFile, minifierOptions);
     }
     verbose && success("Minification process completed.");
 

@@ -1,13 +1,11 @@
 import * as prettier from "prettier";
-import replaceCSSJSLinks from "./replaceCSSJSLinks.js";
 import { BundlerOptions, HTMLOptions } from "../data/interfaces.js";
 import { error, success } from "./colors.js";
-import { JSDOM } from "jsdom";
 import fs from "fs";
 
 // Bundle HTML by replacing CSS and JS links with their content
 // This function is used when the user specifies the --bundle option
-export default async function bundleHTML(inputFile: string, outputFile: string, cssContent: string, jsContent: string, dom: JSDOM, options: BundlerOptions): Promise<void> {
+export default async function bundleHTML(htmlContent: string, outputFile: string, options: BundlerOptions): Promise<void> {
     const { 
         prettify,
         verbose,
@@ -16,23 +14,9 @@ export default async function bundleHTML(inputFile: string, outputFile: string, 
     } = options;
 
     try {
-        // Read the HTML file content
-        let htmlContent = fs.readFileSync(inputFile, "utf8");
-
-        const htmlOptions: HTMLOptions = {
-            verbose: verbose,
-            fetchRemote: fetchRemote,
-            embedAssets: embedAssets
-        };
-
-        htmlContent = replaceCSSJSLinks(htmlContent, cssContent, dom, "css", htmlOptions);
-        htmlContent = replaceCSSJSLinks(htmlContent, jsContent, dom, "js", htmlOptions);
-
-        let prettifiedHtml: string = htmlContent;
-
         // If the user specified to prettify the HTML, use prettier to format it
         if (prettify) {
-            prettifiedHtml = await prettier.format(htmlContent, {
+            htmlContent = await prettier.format(htmlContent, {
                 parser: "html",
                 printWidth: 120,           // Longer line length for HTML
                 tabWidth: 4,               // 4 spaces per tab level
@@ -45,7 +29,7 @@ export default async function bundleHTML(inputFile: string, outputFile: string, 
         }
 
         // Write the bundled HTML to the output file
-        fs.writeFileSync(outputFile, prettifiedHtml, "utf8");
+        fs.writeFileSync(outputFile, htmlContent, "utf8");
         verbose && success(`Bundled HTML saved to ${outputFile}`);
     } 
     catch (err) {

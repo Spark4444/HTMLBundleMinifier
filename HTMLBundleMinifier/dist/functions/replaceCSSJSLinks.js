@@ -1,6 +1,6 @@
 import { warning } from "./colors.js";
 // Function to replace CSS and JS links in HTML with their content using JSDOM
-function replaceCSSJSLinks(htmlContent, content, dom, tag, htmlOptions) {
+function replaceCSSJSLinks(dom, content, tag, htmlOptions) {
     if (content.trim()) {
         const { fetchRemote } = htmlOptions;
         const document = dom.window.document;
@@ -67,9 +67,11 @@ function replaceCSSJSLinks(htmlContent, content, dom, tag, htmlOptions) {
             }
         }
         // Return the modified HTML
-        return dom.serialize();
+        return dom;
     }
-    return htmlContent;
+    else {
+        return dom;
+    }
 }
 export default replaceCSSJSLinks;
 //# sourceMappingURL=replaceCSSJSLinks.js.map
