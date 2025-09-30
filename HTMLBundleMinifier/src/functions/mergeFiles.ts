@@ -1,18 +1,17 @@
 import fs from "fs";
-import path from "path";
 import { error } from "./colors.js";
-import { FileItem } from "../data/interfaces.js";
+import { FileItem, HTMLOptions } from "../data/interfaces.js";
 import { replaceRelativeCSSPathsAndImports } from "./replaceRelativeCSSPaths.js";
 
 // Function to merge the content of multiple files into a single string
 // For the js and css files and inline scripts/styles
-function mergeFiles(fileList: FileItem[], type: string, htmlPath: string, verbose: boolean): string {
+async function mergeFiles(fileList: FileItem[], type: string, htmlPath: string, htmlOptions: HTMLOptions): Promise<string> {
     let mergedContent = "";
-    fileList.forEach((item) => {
+    for (const item of fileList) {
         if (item.type === "inline") {
             if (type === "CSS") {
                 // For inline CSS, use the HTML file's directory as the base path for relative URLs
-                item.content = replaceRelativeCSSPathsAndImports(htmlPath, htmlPath, item.content, verbose);
+                item.content = await replaceRelativeCSSPathsAndImports(htmlPath, htmlPath, item.content, htmlOptions);
             }
             mergedContent += item.content + "\n"; // Add a newline for separation
         }
@@ -22,7 +21,7 @@ function mergeFiles(fileList: FileItem[], type: string, htmlPath: string, verbos
                 let content = fs.readFileSync(filePath, "utf8");
                 // If it's a CSS file, replace relative paths to the HTML file
                 if (type === "CSS") {
-                    content = replaceRelativeCSSPathsAndImports(htmlPath, filePath, content, verbose);
+                    content = await replaceRelativeCSSPathsAndImports(htmlPath, filePath, content, htmlOptions);
                 }
                 mergedContent += content + "\n"; // Add a newline for separation
             }
@@ -30,7 +29,7 @@ function mergeFiles(fileList: FileItem[], type: string, htmlPath: string, verbos
                 error(`Error reading file ${filePath}:`, err);
             }
         }
-    });
+    }
     return mergedContent;
 }
 

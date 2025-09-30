@@ -2,14 +2,14 @@ import replaceRegexPaths from "./replaceRegexPaths.js";
 import replaceCSSImports from "./replaceCSSImports.js";
 import postcss from "postcss";
 import { error as consoleError } from "./colors.js";
-// Function to mergex all imports and replace relative paths in CSS content
-export function replaceRelativeCSSPathsAndImports(htmlPath, cssPath, cssContent, verbose) {
+// Function to merge all imports and replace relative paths in CSS content
+export async function replaceRelativeCSSPathsAndImports(htmlPath, cssPath, cssContent, htmlOptions) {
     try {
         const parsedCSS = postcss.parse(cssContent);
         // First replace @imports before other url() replacements
-        let result = replaceCSSImports(parsedCSS, cssPath, verbose);
+        let result = await replaceCSSImports(parsedCSS, cssPath, htmlOptions);
         // Then relate all url() paths
-        result = replaceRegexPaths(result, cssPath, htmlPath, verbose);
+        result = await replaceRegexPaths(result, cssPath, htmlPath, htmlOptions);
         return result.toString();
     }
     catch (error) {

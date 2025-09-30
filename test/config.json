@@ -1,6 +1,6 @@
 {
-    "bundle": true,
-    "prettify": true,
-    "verbose": true,
-    "prompts": false
+    "embedAssets": true,
+    "fetchRemote": true,
+    "prompts": true,
+    "verbose": true
 }

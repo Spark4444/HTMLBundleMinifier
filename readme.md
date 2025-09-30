@@ -2,6 +2,10 @@
 
 A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS, and JavaScript files into a single optimized HTML file.
 
+## Warning
+
+If your code has syntax errors the minifier might fail or produce incorrect results. Please make sure your HTML, CSS, and JS code is valid before using this tool.
+
 ## Features
 
 - **HTML Minification**: Removes unnecessary whitespace, comments, and optimizes HTML structure

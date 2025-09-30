@@ -35,4 +35,9 @@ export interface CSSComments {
     comments: string[];
     commentPlaceholders: string[];
 }
+export interface HTMLOptions {
+    verbose?: boolean;
+    fetchRemote?: boolean;
+    embedAssets?: boolean;
+}
 //# sourceMappingURL=interfaces.d.ts.map

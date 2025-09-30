@@ -11,7 +11,7 @@ import convertPathToAbsolute from "convert-path-to-absolute";
 import { JSDOM, VirtualConsole } from "jsdom";
 // Main function to handle the minification process
 export default async function main(inputFile, outputFile, options = {}) {
-    let { minifyCSS = true, minifyJS = true, prompts = true, verbose = true, bundle = false, welcomeMessage = true, mangle = true, removeComments = true, removeConsole = true, prettify = true, whitespaces = true } = options;
+    let { minifyCSS = true, minifyJS = true, prompts = true, verbose = true, bundle = false, welcomeMessage = true, mangle = true, removeComments = true, removeConsole = true, prettify = true, whitespaces = true, fetchRemote = false, embedAssets = false, } = options;
     // Check if the input/output files are relative and fix them if they are
     inputFile = inputFile ? convertPathToAbsolute(inputFile) : undefined;
     outputFile = outputFile ? convertPathToAbsolute(outputFile) : undefined;
@@ -77,12 +77,17 @@ export default async function main(inputFile, outputFile, options = {}) {
         // Suppress jsdom errors
     });
     const dom = new JSDOM(htmlContent, { virtualConsole });
+    const htmlOptions = {
+        verbose,
+        fetchRemote,
+        embedAssets
+    };
     // Compile CSS and JS files into a single string
-    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, dom, verbose);
-    compiledCSS = mergeFiles(cssFiles, "CSS", inputFile, verbose);
+    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, dom, htmlOptions);
+    compiledCSS = await mergeFiles(cssFiles, "CSS", inputFile, htmlOptions);
     verbose && log("\n");
-    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, dom, verbose);
-    compiledJS = mergeFiles(jsFiles, "JS", inputFile, verbose);
+    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, dom, htmlOptions);
+    compiledJS = await mergeFiles(jsFiles, "JS", inputFile, htmlOptions);
     if ((compiledCSS || compiledJS) && verbose) {
         log("\n");
     }

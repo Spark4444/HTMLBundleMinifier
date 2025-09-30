@@ -11,7 +11,7 @@
     "build": "tsc",
     "dev": "tsx src/bin/cli.ts",
     "start": "node dist/bin/cli.js",
-    "test": "html-bundle-minifier -i ../test/index.html -o ../test/index.min.html"
+    "test": "html-bundle-minifier -i ../test/index.html -o ../test/index.min.html -g ../test/config.json"
   },
   "keywords": [
     "html",

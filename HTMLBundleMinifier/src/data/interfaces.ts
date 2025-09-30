@@ -39,3 +39,9 @@ export interface CSSComments {
     comments: string[];
     commentPlaceholders: string[];
 }
+
+export interface HTMLOptions {
+    verbose?: boolean;
+    fetchRemote?: boolean;
+    embedAssets?: boolean;
+}

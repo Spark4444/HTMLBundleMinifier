@@ -2,8 +2,9 @@ import readline from "readline";
 import fs from "fs";
 import path from "path";
 import { log, warning, success } from "./colors.js";
-import { FileItem } from "../data/interfaces.js";
+import { FileItem, HTMLOptions } from "../data/interfaces.js";
 import { JSDOM } from "jsdom";
+import fetchFile from "web-file-fetcher";
 
 export const rs = readline.createInterface({
     input: process.stdin,
@@ -41,14 +42,15 @@ export async function promptForMinificationOption(variable: boolean, fileType: s
 }
 
 // Function to find CSS and JS files in the HTML content using JSDOM
-export async function findFiles(content: string, type: string, inputFile: string, dom: JSDOM, verbose: boolean): Promise<FileItem[]> {
+export async function findFiles(content: string, type: string, inputFile: string, dom: JSDOM, htmlOptions: HTMLOptions): Promise<FileItem[]> {
+    const { verbose, fetchRemote } = htmlOptions;
     let result: FileItem[] = [];
     const document = dom.window.document;
 
     if (type === "CSS") {
         // Find external CSS files via <link> tags
         const linkElements = document.querySelectorAll("link[rel=\"stylesheet\"]");
-        linkElements.forEach((link) => {
+        for (const link of linkElements) {
             const href = link.getAttribute("href");
             if (href && !href.startsWith("http")) { // Skip external links
                 verbose && success(`Found ${type} file: ${href} \n`);
@@ -62,10 +64,24 @@ export async function findFiles(content: string, type: string, inputFile: string
                     });
                 } else {
                     // If the file does not exist, warn the user and continue
-                    warning(`\nWarning: File ${filePath} does not exist, continuing without it.\n`);
+                    warning(`\nWarning: File ${filePath} does not exist.\n`);
                 }
             }
-        });
+            else if (fetchRemote && href?.startsWith("http")) {
+                try {
+                    const fetchedResult = await fetchFile(href);
+                    if (fetchedResult) {
+                        verbose && success(`Found ${type} file (fetched): ${href} \n`);
+                        result.push({
+                            type: "inline",
+                            content: fetchedResult
+                        });
+                    }
+                } catch (error) {
+                    warning(`\nWarning: Failed to fetch ${href}.\n`);
+                }
+            }
+        }
 
         // Find inline CSS content via <style> tags
         const styleElements = document.querySelectorAll("style");
@@ -83,7 +99,7 @@ export async function findFiles(content: string, type: string, inputFile: string
     } else if (type === "JS") {
         // Find external JS files via <script> tags with src attribute
         const scriptElements = document.querySelectorAll("script[src]");
-        scriptElements.forEach((script) => {
+        for (const script of scriptElements) {
             const src = script.getAttribute("src");
             if (src && !src.startsWith("http")) { // Skip external links
                 verbose && success(`Found ${type} file: ${src} \n`);
@@ -97,10 +113,24 @@ export async function findFiles(content: string, type: string, inputFile: string
                     });
                 } else {
                     // If the file does not exist, warn the user and continue
-                    warning(`\nWarning: File ${filePath} does not exist, continuing without it.\n`);
+                    warning(`\nWarning: File ${filePath} does not exist.\n`);
                 }
             }
-        });
+            else if (fetchRemote && src?.startsWith("http")) {
+                try {
+                    const fetchedResult = await fetchFile(src);
+                    if (fetchedResult) {
+                        verbose && success(`Found ${type} file (fetched): ${src} \n`);
+                        result.push({
+                            type: "inline",
+                            content: fetchedResult
+                        });
+                    }
+                } catch (error) {
+                    warning(`\nWarning: Failed to fetch ${src}.\n`);
+                }
+            }
+        }
 
         // Find inline JS content via <script> tags without src attribute
         const inlineScriptElements = document.querySelectorAll("script:not([src])");

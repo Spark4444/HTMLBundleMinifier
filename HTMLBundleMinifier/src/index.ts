@@ -13,12 +13,7 @@ import convertPathToAbsolute from "convert-path-to-absolute";
 import { JSDOM, VirtualConsole} from "jsdom";
 
 // Interfaces declaration
-interface FileItem {
-    type: "inline" | "path";
-    content: string;
-}
-
-import { Options, MinifierOptions, BundlerOptions } from "./data/interfaces.js";
+import { Options, MinifierOptions, BundlerOptions, FileItem, HTMLOptions } from "./data/interfaces.js";
 
 // Main function to handle the minification process
 export default async function main(inputFile?: string, outputFile?: string, options: Options = {}): Promise<void> {
@@ -33,7 +28,9 @@ export default async function main(inputFile?: string, outputFile?: string, opti
         removeComments = true,
         removeConsole = true,
         prettify = true,
-        whitespaces = true
+        whitespaces = true,
+        fetchRemote = false,
+        embedAssets = false,
     } = options;
 
     // Check if the input/output files are relative and fix them if they are
@@ -119,14 +116,20 @@ export default async function main(inputFile?: string, outputFile?: string, opti
 
     const dom = new JSDOM(htmlContent, { virtualConsole });
 
+    const htmlOptions: HTMLOptions = {
+        verbose,
+        fetchRemote,
+        embedAssets
+    };
+
     // Compile CSS and JS files into a single string
-    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, dom, verbose);
-    compiledCSS = mergeFiles(cssFiles, "CSS", inputFile, verbose);
+    cssFiles = await findFiles(htmlContent, "CSS", stringInputFile, dom, htmlOptions);
+    compiledCSS = await mergeFiles(cssFiles, "CSS", inputFile, htmlOptions);
 
     verbose && log("\n");
 
-    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, dom, verbose);
-    compiledJS = mergeFiles(jsFiles, "JS", inputFile, verbose);
+    jsFiles = await findFiles(htmlContent, "JS", stringInputFile, dom, htmlOptions);
+    compiledJS =  await mergeFiles(jsFiles, "JS", inputFile, htmlOptions);
 
     if ((compiledCSS || compiledJS) && verbose) {
         log("\n");
