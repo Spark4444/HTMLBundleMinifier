@@ -1,6 +1,6 @@
 import { stringToDataURI } from "web-file-fetcher";
 import fs from "fs";
-import { warning } from "./colors.js";
+import { warning, success } from "./colors.js";
 
 // Function to convert a file to a Base64 data URI
 // Warning: it increases the file size by 33%;
@@ -12,5 +12,6 @@ export default function convertFileToBase64(filePath: string, verbose: boolean):
     }
 
     const fileContent = fs.readFileSync(filePath);
+    verbose && success(`Embedded asset: ${filePath}\n`);
     return stringToDataURI(fileContent, filePath);
 }
