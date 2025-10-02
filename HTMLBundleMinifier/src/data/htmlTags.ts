@@ -1,5 +1,9 @@
+type HtmlTags = {
+    [key: string]: string[];
+};
+
 // List of HTML tags and their attributes that may contain URLs
-const htmlTags = {
+const htmlTags: HtmlTags = {
   "img": [
     "src",
     "srcset",
@@ -41,8 +45,7 @@ const htmlTags = {
     "xlink:href"
   ],
   "use": [
-    "href",
-    "xlink:href"
+    "href"
   ]
 };
 

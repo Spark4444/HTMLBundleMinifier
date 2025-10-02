@@ -1,15 +1,6 @@
-declare const htmlTags: {
-    img: string[];
-    source: string[];
-    video: string[];
-    audio: string[];
-    track: string[];
-    link: string[];
-    object: string[];
-    embed: string[];
-    input: string[];
-    image: string[];
-    use: string[];
+type HtmlTags = {
+    [key: string]: string[];
 };
+declare const htmlTags: HtmlTags;
 export default htmlTags;
 //# sourceMappingURL=htmlTags.d.ts.map

@@ -9,6 +9,7 @@ import bundleHTML from "./functions/bundleHTML.js";
 import mergeFiles from "./functions/mergeFiles.js";
 import { log, error, success } from "./functions/colors.js";
 import convertPathToAbsolute from "convert-path-to-absolute";
+import convertHTMLLinks from "./functions/convertHTMLLinks.js";
 
 import { JSDOM, VirtualConsole} from "jsdom";
 
@@ -139,6 +140,7 @@ export default async function main(inputFile?: string, outputFile?: string, opti
     // Replace CSS and JS links in the HTML with the compiled content
     dom = replaceCSSJSLinks(dom, compiledCSS, "css", htmlOptions);
     dom = replaceCSSJSLinks(dom, compiledJS, "js", htmlOptions);
+    dom = await convertHTMLLinks(dom, htmlOptions);
 
     htmlContent = dom.serialize();
 

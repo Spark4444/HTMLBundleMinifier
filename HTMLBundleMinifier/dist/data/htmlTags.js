@@ -41,8 +41,7 @@ const htmlTags = {
         "xlink:href"
     ],
     "use": [
-        "href",
-        "xlink:href"
+        "href"
     ]
 };
 export default htmlTags;
