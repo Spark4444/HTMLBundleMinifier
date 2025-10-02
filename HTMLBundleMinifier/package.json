@@ -1,6 +1,6 @@
 {
   "name": "html-bundle-minifier",
-  "version": "3.1.1",
+  "version": "4.0.1",
   "description": "A powerful and simple HTML bundle minifier that combines and minifies HTML, CSS, and JavaScript files into a single optimized HTML file.",
   "main": "dist/index.js",
   "type": "module",
@@ -11,7 +11,7 @@
     "build": "tsc",
     "dev": "tsx src/bin/cli.ts",
     "start": "node dist/bin/cli.js",
-    "test": "html-bundle-minifier -i ../test/index.html -o ../test/index.min.html -g ../test/config.json"
+    "test": "html-bundle-minifier -i ../test/src/index.html -o ../test/src/index.min.html -g ../test/config.json"
   },
   "keywords": [
     "html",

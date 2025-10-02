@@ -5,9 +5,11 @@ import fetchFile from "web-file-fetcher";
 import convertFileToBase64 from "./converFileToBase64.js";
 import { warning, success } from "./colors.js";
 import { parseSRCSET, stringifySRCSET } from "./parseSRCSET.js";
+import { isPathAbsolute } from 'convert-path-to-absolute';
+import path from "path";
 
 // Helper function to convert a single attribute value
-async function convertAttribute(value: string, htmlOptions: HTMLOptions, tag: string, attr: string): Promise<string> {
+async function convertAttribute(value: string, htmlPath: string, htmlOptions: HTMLOptions, tag: string, attr: string): Promise<string> {
     const { 
         fetchRemote,
         embedAssets, 
@@ -24,8 +26,10 @@ async function convertAttribute(value: string, htmlOptions: HTMLOptions, tag: st
         }
     } else if (embedAssets && !value.startsWith("data:")) {
         // convertFileToBase64 already handles try catch on its own
+        const absolutePath = isPathAbsolute(value) ? value : path.resolve(path.dirname(htmlPath), value);
+
         const base64 = convertFileToBase64(
-            value, 
+            absolutePath, 
             verbose, 
             `Embedded asset: ${value} (referenced in <${tag} ${attr}>)\n`, 
             `Failed to embed asset ${value} (referenced in <${tag} ${attr}>)\n`
@@ -37,7 +41,7 @@ async function convertAttribute(value: string, htmlOptions: HTMLOptions, tag: st
 }
 
 //  Function to convert all HTML element attribute.links from paths to data from http and local files
-export default async function convertHTMLLinks(dom: JSDOM, htmlOptions: HTMLOptions): Promise<JSDOM> {
+export default async function convertHTMLLinks(dom: JSDOM, htmlPath: string, htmlOptions: HTMLOptions): Promise<JSDOM> {
     const document = dom.window.document;
     const { 
         fetchRemote,
@@ -57,14 +61,14 @@ export default async function convertHTMLLinks(dom: JSDOM, htmlOptions: HTMLOpti
                 const value = element.getAttribute(attr);
                 //  Everything except srcset should behave the same
                 if (value && value !== "srcset") {
-                    const converted = await convertAttribute(value, htmlOptions, tag, attr);
+                    const converted = await convertAttribute(value, htmlPath, htmlOptions, tag, attr);
                     element.setAttribute(attr, converted);
                 }
                 // Treat srcset attribute differently
                 else if (attr === "srcset" && value) {
                     let parsed = parseSRCSET(value, verbose);
                     for (const item of parsed) {
-                        const converted = await convertAttribute(item[0], htmlOptions, tag, attr);
+                        const converted = await convertAttribute(item[0], htmlPath, htmlOptions, tag, attr);
                         item[0] = converted;
                     }
                     element.setAttribute(attr, stringifySRCSET(parsed));

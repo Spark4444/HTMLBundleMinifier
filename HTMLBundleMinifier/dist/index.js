@@ -96,7 +96,7 @@ export default async function main(inputFile, outputFile, options = {}) {
     // Replace CSS and JS links in the HTML with the compiled content
     dom = replaceCSSJSLinks(dom, compiledCSS, "css", htmlOptions);
     dom = replaceCSSJSLinks(dom, compiledJS, "js", htmlOptions);
-    dom = await convertHTMLLinks(dom, htmlOptions);
+    dom = await convertHTMLLinks(dom, stringInputFile, htmlOptions);
     htmlContent = dom.serialize();
     // Minify HTML
     if (bundle) {

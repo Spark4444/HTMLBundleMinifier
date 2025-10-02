@@ -6,7 +6,7 @@ import { warning, success } from "./colors.js";
 export default function convertFileToBase64(filePath, verbose, successMessage = `Embedded asset: ${filePath}\n`, errorMessage = `Failed to embed asset ${filePath}\n`) {
     try {
         if (!fs.existsSync(filePath)) {
-            verbose && warning(`\nWarning: File ${filePath} does not exist.\n`);
+            verbose && warning(errorMessage);
             // Return the file path back
             return filePath;
         }
