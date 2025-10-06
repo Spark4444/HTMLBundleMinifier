@@ -45,7 +45,7 @@ export default async function replaceRegexPaths(parsedCSS, cssPath, originPath, 
                     const relativePath = path.relative(originDirectory, absoluteCSSPath);
                     const relativeAssetPath = path.relative(originDirectory, absoluteCSSPath);
                     if (embedAssets) {
-                        const data = convertFileToBase64(absoluteCSSPath, verbose);
+                        const data = `url(${quote}${convertFileToBase64(absoluteCSSPath, verbose)}${quote})`;
                         replacement = data;
                     }
                     else {
